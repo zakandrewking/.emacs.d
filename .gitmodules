@@ -1,0 +1,3 @@
+[submodule "lisp/python-mode"]
+	path = lisp/python-mode
+	url = git://github.com/emacsmirror/python-mode.git
