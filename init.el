@@ -374,12 +374,16 @@
 ;; web programming
 ;;-----------------------------------------------------------------------
 
-(add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'" . nxml-mode))
 (setq mumamo-chunk-coloring 5)
 (custom-set-faces
  '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
  '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold)))))
 
+(eval-after-load "rng-loc"
+  '(add-to-list 'rng-schema-locating-files "~/.emacs.d/lisp/html5-el/schemas.xml"))
+
+(require 'whattf-dt)
 
 ;;-----------------------------------------------------------------------
 ;; python programming
