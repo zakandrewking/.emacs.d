@@ -36,11 +36,11 @@
 ;;
 ;; Unicode symbols
 ;; C-x 8 C-h
-;; 
+;;
 ;; jump to function definition
 ;; ETAGS
 ;; http://www.coverfire.com/archives/2004/06/24/emacs-source-code-navigation/
-;; 
+;;
 ;; M-x occur (also bound to M-s o)
 ;; scroll-all-mode
 ;; emacs -nw ... open in terminal
@@ -91,14 +91,31 @@
   (require 'mouse)
   (xterm-mouse-mode t)
   (global-set-key [mouse-4] '(lambda ()
-                              (interactive)
-                              (scroll-down 1)))
+                               (interactive)
+                               (scroll-down 1)))
   (global-set-key [mouse-5] '(lambda ()
-                              (interactive)
-                              (scroll-up 1)))
+                               (interactive)
+                               (scroll-up 1)))
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
-)
+
+  ;; from: https://gist.github.com/1023272.git
+  ;; not working
+  (require 'pbcopy)
+  (turn-on-pbcopy)
+
+  ;; (defun copy-from-osx ()
+  ;; (shell-command-to-string "pbpaste"))
+
+  ;; (defun paste-to-osx (text &optional push)
+  ;; (let ((process-connection-type nil))
+  ;; (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+  ;; (process-send-string proc text)
+  ;; (process-send-eof proc))))
+
+  ;; (setq interprogram-cut-function 'paste-to-osx)
+  ;; (setq interprogram-paste-function 'copy-from-osx)
+  )
 
 ;;-----------------------------------------------------------------------
 ;; movement
@@ -130,15 +147,15 @@
   (tool-bar-mode -1)
   (tooltip-mode -1)
   (global-linum-mode t))
- ;; '(aquamacs-additional-fontsets nil t)
- ;; '(aquamacs-autoface-mode nil)
- ;; '(aquamacs-customization-version-id 215 t)
- ;; '(aquamacs-tool-bar-user-customization nil t)
- ;; '(default-frame-alist (quote ((tool-bar-lines . 0) (fringe) (internal-border-width . 0) (vertical-scroll-bars . right) (cursor-type . box) (menu-bar-lines . 1) (left-fringe . 4) (right-fringe . 0) (background-color . "Grey15") (background-mode . dark) (border-color . "Grey") (cursor-color . "Grey") (foreground-color . "Grey") (mouse-color . "Grey"))))
- ;; '(ns-tool-bar-display-mode (quote both) t)
- ;; '(ns-tool-bar-size-mode (quote regular) t)
- ;; '(tabbar-mode nil nil (tabbar))
- ;; '(visual-line-mode nil t))
+;; '(aquamacs-additional-fontsets nil t)
+;; '(aquamacs-autoface-mode nil)
+;; '(aquamacs-customization-version-id 215 t)
+;; '(aquamacs-tool-bar-user-customization nil t)
+;; '(default-frame-alist (quote ((tool-bar-lines . 0) (fringe) (internal-border-width . 0) (vertical-scroll-bars . right) (cursor-type . box) (menu-bar-lines . 1) (left-fringe . 4) (right-fringe . 0) (background-color . "Grey15") (background-mode . dark) (border-color . "Grey") (cursor-color . "Grey") (foreground-color . "Grey") (mouse-color . "Grey"))))
+;; '(ns-tool-bar-display-mode (quote both) t)
+;; '(ns-tool-bar-size-mode (quote regular) t)
+;; '(tabbar-mode nil nil (tabbar))
+;; '(visual-line-mode nil t))
 
 ;;-----------------------------------------------------------------------
 ;; appearance
@@ -173,7 +190,7 @@
 ;;   (interactive)
 ;;   (setq whitespace-style '(face lines-tail))
 ;;   (whitespace-mode t))
-;; (add-hook 'c-mode-hook			'whitespace-hook)
+;; (add-hook 'c-mode-hook                       'whitespace-hook)
 
 ;; (require 'minimap)
 ;;  * Use 'M-x minimap-create' in a buffer you're currently editing.
@@ -181,7 +198,7 @@
 
 (require 'sr-speedbar)
 
-;; (require 'highlight-indentation) 
+;; (require 'highlight-indentation)
 ;; (add-hook 'python-mode-hook 'highlight-indentation-mode)
 ;; (set-face-background 'highlight-indentation-face "#222222")
 ;; (set-face-background 'highlight-indentation-current-column-face "#222222")
@@ -241,7 +258,7 @@
 ;;      ;; anything-c-source-man-pages
 ;;      anything-c-source-emacs-commands
 ;;      )
-;;    " *my-anything*")) 
+;;    " *my-anything*"))
 ;; (global-set-key (kbd "C-'") 'my-anything)
 
 ;;-----------------------------------------------------------------------
@@ -250,15 +267,15 @@
 ;; pabbrev
 (require 'pabbrev)
 (defun pabbrev-hook ()
-   (pabbrev-mode 1))
-(add-hook 'c-mode-hook 		   'pabbrev-hook)
+  (pabbrev-mode 1))
+(add-hook 'c-mode-hook             'pabbrev-hook)
 (add-hook 'sh-mode-hook            'pabbrev-hook)
 (add-hook 'emacs-lisp-mode-hook    'pabbrev-hook)
-(add-hook 'LaTeX-mode-hook 	   'pabbrev-hook)
-(add-hook 'matlab-mode-hook 	   'pabbrev-hook)
-(add-hook 'python-mode-hook 	   'pabbrev-hook)
-(add-hook 'nxhtml-mode-hook   		'pabbrev-hook)
-(add-hook 'nxhtml-mumamo-mode-hook   	'pabbrev-hook)
+(add-hook 'LaTeX-mode-hook         'pabbrev-hook)
+(add-hook 'matlab-mode-hook        'pabbrev-hook)
+(add-hook 'python-mode-hook        'pabbrev-hook)
+(add-hook 'nxhtml-mode-hook             'pabbrev-hook)
+(add-hook 'nxhtml-mumamo-mode-hook      'pabbrev-hook)
 (add-hook 'org-mode-hook           'pabbrev-hook)
 (add-hook 'javascript-mode-hook    'pabbrev-hook)
 
@@ -274,12 +291,12 @@
   (let ((point))
     (save-excursion
       (let ((bounds (pabbrev-bounds-of-thing-at-point)))
-	(progn
-	  (delete-region (car bounds) (cdr bounds))
-	  (insert word)
-	  (setq point (point)))))
+        (progn
+          (delete-region (car bounds) (cdr bounds))
+          (insert word)
+          (setq point (point)))))
     (if point
-	(goto-char point))))
+        (goto-char point))))
 
 (fset 'pabbrev-suggestions-goto-buffer 'pabbrev-suggestions-ido)
 
@@ -337,17 +354,17 @@
 ;; (global-set-key (kbd "<f9>") 'gud-step);; equiv matlab step in
 ;; (global-set-key (kbd "<f8>") 'gud-next) ;; equiv matlab step 1
 ;; (globa l-set-key (kbd "<f7>") 'gud-finish) ;; equiv matlab step out
-    			    
+
 ;; tab to column of mark with M-<tab>
 
-;; (defun itc () 				
+;; (defun itc ()
 ;;    "indent to column of mark"
 ;;    (interactive)
 ;;    (setq pos (point))
 ;;    (goto-char (mark t))
 ;;    (setq col (current-column))
 ;;    (goto-char pos)
-;;    (just-one-space)	
+;;    (just-one-space)
 ;;    (indent-to-column col))
 ;; (global-set-key (kbd "M-<tab>") 'itc)
 
@@ -437,12 +454,12 @@
 ;;     'comint-previous-input)
 
 
-;; (setq comint-completion-autolist t	
-;; 					;list possibilities on partial
-;; 					;completion
-;;        comint-completion-recexact nil	
-;; 					;use shortest compl. if
-;; 					;characters cannot be added
+;; (setq comint-completion-autolist t
+;;                                      ;list possibilities on partial
+;;                                      ;completion
+;;        comint-completion-recexact nil
+;;                                      ;use shortest compl. if
+;;                                      ;characters cannot be added
 ;;        ;; how many history items are stored in comint-buffers (e.g. py-shell)
 ;;        ;; use the HISTSIZE environment variable that shells use (if avail.)
 ;;        ;; (default is 32)
@@ -468,8 +485,8 @@
 ;; Markdown mode
 ;;-----------------------------------------------------------------------
 (require 'markdown-mode)
-;; (autoload 'markdown-mode "markdown-mode.el" 
-;;   "Major mode for editing Markdown files" t) 
+;; (autoload 'markdown-mode "markdown-mode.el"
+;;   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)) ;github-flavored markdown
 
 ;;-----------------------------------------------------------------------
@@ -507,7 +524,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-c d") 'deft)
 (define-key my-keys-minor-mode-map (kbd "C-c q") 'auto-fill-mode)
 (define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line)
-(define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only) 
+(define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
 (define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
 (define-key my-keys-minor-mode-map (kbd "M-<down>") 'forward-paragraph)
