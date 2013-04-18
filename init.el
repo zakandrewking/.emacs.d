@@ -86,6 +86,9 @@
 ;; start emacsserver
 (server-start)
 
+;; no menu bar
+(menu-bar-mode -1)
+
 ;; Enable mouse support
 (unless window-system
   (require 'mouse)
@@ -99,22 +102,23 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
 
-  ;; from: https://gist.github.com/1023272.git
-  ;; not working
-  (require 'pbcopy)
-  (turn-on-pbcopy)
+  (defun pt-pbpaste ()
+    "Paste data from pasteboard."
+    (interactive)
+    (shell-command-on-region
+     (point)
+     (if mark-active (mark) (point))
+     "pbpaste" nil t))
 
-  ;; (defun copy-from-osx ()
-  ;; (shell-command-to-string "pbpaste"))
+  (defun pt-pbcopy ()
+    "Copy region to pasteboard."
+    (interactive)
+    (print (mark))
+    (when mark-active
+      (shell-command-on-region
+       (point) (mark) "pbcopy")
+      (kill-buffer "*Shell Command Output*")))
 
-  ;; (defun paste-to-osx (text &optional push)
-  ;; (let ((process-connection-type nil))
-  ;; (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-  ;; (process-send-string proc text)
-  ;; (process-send-eof proc))))
-
-  ;; (setq interprogram-cut-function 'paste-to-osx)
-  ;; (setq interprogram-paste-function 'copy-from-osx)
   )
 
 ;;-----------------------------------------------------------------------
@@ -535,6 +539,8 @@
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'git-gutter:toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'linum-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
+(define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
