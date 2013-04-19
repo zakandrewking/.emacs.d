@@ -2,3 +2,4 @@
 .org-id-locations
 .saves*
 el-get/
+srecode-map.el
