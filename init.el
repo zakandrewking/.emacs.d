@@ -1,55 +1,6 @@
-;;LEARN
-;;
-;; http://www.masteringemacs.org/articles/2011/01/14/effective-editing-movement/
-;;
-;; M-x iwb ... tab the whole doc
-;; M-x reload-dotemacs ... reload .emacs
-;; M-; ... comment-dwim
-;; M-% ... queried search and replace
-;;   Spacebar                   Replace text and find the next occurrence
-;;   Del                        Leave text as is and find the next occurrence
-;;   . (period)                 Replace text, then stop looking for occurrences
-;;   ! (exclamation point)      Replace all occurrences without asking
-;;   ^ (caret)                  Return the cursor to previously replaced text
-;; M-tab ... change spelling
-;; M-j ... continue comment
-;; M-g-g ... goto line
-;; M-x ecb-activate ... launch ecb
-;; M-^ join to end of previous line (delete-indentation &optional arg)
-;; C-4 C-x <tab> ... indent region 4 spaces
-;; C-_ or C-/ ... undo last
-;; C-x s ... Save any or all buffers to their files (save-some-buffers).
-;; C-x C-v ... reload the buffer (and sr-speedbar)xk
-;;
-;; in aquamacs:
-;; C-x <right/left> ... switches to next/previous buffer
-;;
-;; search directory ... grep, rgrep, etc
-;;
-;; M-x kill-some-buffers
-;; M-x dired ... current directory
-;; C-x C-q ... toggle-read-only
-;;
-;; M-l ... downcase-word
-;; M-u ... upcase-word
-;; M-c ... capitalize-word
-;;
-;; Unicode symbols
-;; C-x 8 C-h
-;;
-;; jump to function definition
-;; ETAGS
-;; http://www.coverfire.com/archives/2004/06/24/emacs-source-code-navigation/
-;;
-;; M-x occur (also bound to M-s o)
-;; scroll-all-mode
-;; emacs -nw ... open in terminal
-
-
 ;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
-
 ;; set default directory
 (let ((default-directory "~/.emacs.d/lisp/"))
   (normal-top-level-add-to-load-path '("."))
@@ -89,8 +40,56 @@
 ;; no menu bar
 (menu-bar-mode -1)
 
-;; Enable mouse support
+;; terminal emacs
+(unless (featurep 'aquamacs)
+  ;; Set up el-get
+  (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+  (unless (require 'el-get nil 'noerror)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+      (let (el-get-master-branch)
+        (goto-char (point-max))
+        (eval-print-last-sexp))))
+
+  ;; local sources
+  (setq el-get-sources
+        '((:name zenburn
+                 :type github
+		 :pkgname "bbatsov/zenburn-emacs"
+  		 :prepare (progn
+			    (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn")
+			    (load-theme 'zenburn t)
+			    ))
+	  (:name solarized
+		 :type github
+		 :pkgname "sellout/emacs-color-theme-solarized"
+		 :prepare (progn
+			    (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized")
+			    (load-theme 'solarized-dark t)
+			    ))
+	  )
+  )
+  (setq my-packages
+        (append
+         '(el-get matlab-mode)))
+
+  (el-get-cleanup my-packages)
+  (el-get 'sync my-packages)
+
+  ;; color theme
+  ;; Should match terminal color theme,
+  ;; or at least add `export TERM=xterm-256color` to your bash_profile.
+  (load-theme 'wombat t)
+
+  ;; linum-mode
+  (global-linum-mode 1)
+  (setq linum-format "%3d ")
+  )
+
 (unless window-system
+  ;; Enable mouse support
   (require 'mouse)
   (xterm-mouse-mode t)
   (global-set-key [mouse-4] '(lambda ()
@@ -101,25 +100,25 @@
                                (scroll-up 1)))
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
-
-  (defun pt-pbpaste ()
-    "Paste data from pasteboard."
-    (interactive)
-    (shell-command-on-region
-     (point)
-     (if mark-active (mark) (point))
-     "pbpaste" nil t))
-
-  (defun pt-pbcopy ()
-    "Copy region to pasteboard."
-    (interactive)
-    (print (mark))
-    (when mark-active
-      (shell-command-on-region
-       (point) (mark) "pbcopy")
-      (kill-buffer "*Shell Command Output*")))
-
   )
+
+;; system copy paste
+(defun pt-pbpaste ()
+  "Paste data from pasteboard."
+  (interactive)
+  (shell-command-on-region
+   (point)
+   (if mark-active (mark) (point))
+   "pbpaste" nil t))
+
+(defun pt-pbcopy ()
+  "Copy region to pasteboard."
+  (interactive)
+  (print (mark))
+  (when mark-active
+    (shell-command-on-region
+     (point) (mark) "pbcopy")
+    (kill-buffer "*Shell Command Output*")))
 
 ;;-----------------------------------------------------------------------
 ;; movement
@@ -165,8 +164,6 @@
 ;; appearance
 ;;-----------------------------------------------------------------------
 
-;; set global font
-(set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
 ;; set-frame-font
 
 (setq resize-mini-windows nil)
@@ -177,6 +174,9 @@
 (setq sr-speedbar-width-x 50)
 
 (when (featurep 'aquamacs)
+  ;; set global font
+  (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+
   ;; set color theme
   (require 'color-theme)
   (color-theme-initialize)
@@ -337,12 +337,9 @@
 ;; (add-hook 'python-mode-hook     'my-tab-fix)
 ;; more mode hooks, yada yada, etc ...
 
-
-;;;;;;;;;;;;;;;;;;;;;;
+;;-----------------------------------------------------------------------
 ;; TEXT management
-;;;;;;;;;;;;;;;;;;;;;;
-
-
+;;-----------------------------------------------------------------------
 (defun iwb ()
   "indent whole buffer"
   (interactive)
@@ -407,8 +404,8 @@
             (setq matlab-indent-level 4)
             (setq fill-column 80)
             (define-key matlab-mode-map "\M-;" 'comment-dwim)))
-(setq matlab-show-mlint-warnings nil)
-(setq mlint-programs '("/Applications/MATLAB_R2010b.app/bin/maci64/mlint"))
+;; (setq matlab-show-mlint-warnings nil)
+;; (setq mlint-programs '("/Applications/MATLAB_R2010b.app/bin/maci64/mlint"))
 
 ;;-----------------------------------------------------------------------
 ;; Latex programming
@@ -435,7 +432,6 @@
 (custom-set-faces
  '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
  '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold)))))
-
 
 ;;-----------------------------------------------------------------------
 ;; python programming
