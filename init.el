@@ -55,25 +55,18 @@
 
   ;; local sources
   (setq el-get-sources
-        '((:name zenburn
-                 :type github
-		 :pkgname "bbatsov/zenburn-emacs"
-  		 :prepare (progn
-			    (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn")
-			    (load-theme 'zenburn t)
-			    ))
-	  (:name solarized
+        '((:name nxhtml
 		 :type github
-		 :pkgname "sellout/emacs-color-theme-solarized"
+		 :pkgname "emacsmirror/nxhtml"
 		 :prepare (progn
-			    (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized")
-			    (load-theme 'solarized-dark t)
+			    (load "~/.emacs.d/el-get/nxhtml/autostart.el")
 			    ))
 	  )
   )
   (setq my-packages
         (append
-         '(el-get matlab-mode)))
+         '(el-get matlab-mode nxhtml)
+	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
   (el-get 'sync my-packages)
@@ -172,6 +165,9 @@
 (setq sr-speedbar-max-width 100)
 (setq sr-speedbar-width-console 50)
 (setq sr-speedbar-width-x 50)
+
+; Set cursor color
+;; (set-cursor-color "#bb584b") 
 
 (when (featurep 'aquamacs)
   ;; set global font
@@ -379,6 +375,13 @@
 
 ;; (setq whitespace-action '(auto-cleanup)) ;; automatically clean up bad whitespace
 ;; (setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab)) ;; only show bad whitespace
+
+;;-----------------------------------------------------------------------
+;; shell programming
+;;-----------------------------------------------------------------------
+
+(add-to-list 'auto-mode-alist '("\\.sh\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.pbs\\'" . shell-script-mode))
 
 ;;-----------------------------------------------------------------------
 ;; matlab programming

@@ -3,3 +3,4 @@
 .saves*
 el-get/
 srecode-map.el
+tramp
