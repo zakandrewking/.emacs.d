@@ -65,7 +65,7 @@
   )
   (setq my-packages
         (append
-         '(el-get matlab-mode nxhtml)
+         '(el-get cedet matlab-mode nxhtml)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
