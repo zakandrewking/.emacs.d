@@ -17,7 +17,7 @@
 (setq magic-mode-alist ())
 
 ;; http://whattheemacsd.com/file-defuns.el-01.html
-(defun rename-current-buffer-file ()
+(defun rename-file-and-buffer ()
   "Renames current buffer and file it is visiting."
   (interactive)
   (let ((name (buffer-name))
@@ -113,6 +113,20 @@
      (point) (mark) "pbcopy")
     (kill-buffer "*Shell Command Output*")))
 
+;; hide autosaves in temp directory
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t))
+;; hide backup files
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+  backup-by-copying t    ; Don't delink hardlinks
+  version-control t      ; Use version numbers on backups
+  delete-old-versions t  ; Automatically delete excess backups
+  kept-new-versions 20   ; how many of the newest versions to keep
+  kept-old-versions 5    ; and how many of the old
+  )
+
 ;;-----------------------------------------------------------------------
 ;; movement
 ;;-----------------------------------------------------------------------
@@ -148,7 +162,10 @@
 ;; appearance
 ;;-----------------------------------------------------------------------
 
-;; set-frame-font
+(column-number-mode t)
+(line-number-mode t)
+
+;; speedbar
 (setq resize-mini-windows nil)
 (setq speedbar-use-images nil)
 (setq sr-speedbar-auto-refresh nil)

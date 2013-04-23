@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# must run M-x server-start in Aquamacs
+# must run M-x server-start in emacs
 # adapted from: http://ulf.zeitform.de/en/documents/git-ediff.html
 
 # test args
