@@ -65,7 +65,7 @@
   )
   (setq my-packages
         (append
-         '(el-get matlab-mode nxhtml)
+         '(el-get cedet matlab-mode nxhtml git-gutter)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -157,15 +157,6 @@
   (tool-bar-mode -1)
   (tooltip-mode -1)
   (global-linum-mode t))
-;; '(aquamacs-additional-fontsets nil t)
-;; '(aquamacs-autoface-mode nil)
-;; '(aquamacs-customization-version-id 215 t)
-;; '(aquamacs-tool-bar-user-customization nil t)
-;; '(default-frame-alist (quote ((tool-bar-lines . 0) (fringe) (internal-border-width . 0) (vertical-scroll-bars . right) (cursor-type . box) (menu-bar-lines . 1) (left-fringe . 4) (right-fringe . 0) (background-color . "Grey15") (background-mode . dark) (border-color . "Grey") (cursor-color . "Grey") (foreground-color . "Grey") (mouse-color . "Grey"))))
-;; '(ns-tool-bar-display-mode (quote both) t)
-;; '(ns-tool-bar-size-mode (quote regular) t)
-;; '(tabbar-mode nil nil (tabbar))
-;; '(visual-line-mode nil t))
 
 ;;-----------------------------------------------------------------------
 ;; appearance
@@ -182,9 +173,6 @@
 (setq sr-speedbar-width-console 50)
 (setq sr-speedbar-width-x 50)
 
-; Set cursor color
-;; (set-cursor-color "#bb584b") 
-
 (when (featurep 'aquamacs)
   ;; set global font
   (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
@@ -197,7 +185,6 @@
 
 ;; line highlight color
 (global-hl-line-mode 0)
-;; (set-face-background 'hl-line "#222222")
 
 ;; highlight lines that are too long
 ;; (require 'whitespace)
@@ -206,18 +193,8 @@
 ;;   (interactive)
 ;;   (setq whitespace-style '(face lines-tail))
 ;;   (whitespace-mode t))
-;; (add-hook 'c-mode-hook                       'whitespace-hook)
-
-;; (require 'minimap)
-;;  * Use 'M-x minimap-create' in a buffer you're currently editing.
-;;  * Use 'M-x minimap-kill' to kill the minimap.
 
 (require 'sr-speedbar)
-
-;; (require 'highlight-indentation)
-;; (add-hook 'python-mode-hook 'highlight-indentation-mode)
-;; (set-face-background 'highlight-indentation-face "#222222")
-;; (set-face-background 'highlight-indentation-current-column-face "#222222")
 
 ;;-----------------------------------------------------------------------
 ;; window switching
@@ -242,7 +219,6 @@
   (interactive)
   (select-window (next-window nil 'never-minibuf nil)))
 
-
 ;;-----------------------------------------------------------------------
 ;; flymake
 ;;-----------------------------------------------------------------------
@@ -256,30 +232,9 @@
 ;;(add-hook 'MATLAB-mode-hook 'flymake-mode)
 
 ;;-----------------------------------------------------------------------
-;; anything.el
-;;-----------------------------------------------------------------------
-
-;; (require 'anything-match-plugin)
-;; (require 'anything-config)
-;; (defun my-anything ()
-;;   (interactive)
-;;   (anything-other-buffer
-;;    '(
-;;      ;; anything-c-source-locate
-;;      anything-c-source-buffers
-;;      anything-c-source-file-name-history
-;;      anything-c-source-files-in-current-dir
-;;      ;; anything-c-source-info-pages
-;;      ;; anything-c-source-info-elisp
-;;      ;; anything-c-source-man-pages
-;;      anything-c-source-emacs-commands
-;;      )
-;;    " *my-anything*"))
-;; (global-set-key (kbd "C-'") 'my-anything)
-
-;;-----------------------------------------------------------------------
 ;; TAB behavior
 ;;-----------------------------------------------------------------------
+
 ;; pabbrev
 (require 'pabbrev)
 (defun pabbrev-hook ()
@@ -316,7 +271,6 @@
 
 (fset 'pabbrev-suggestions-goto-buffer 'pabbrev-suggestions-ido)
 
-
 ;; ;; in some modes, just expand
 ;; (defun just-expand (arg)
 ;;   (interactive "*P")
@@ -324,7 +278,7 @@
 ;; (defun my-tab-expand ()
 ;;   (local-set-key [tab] 'just-expand))
 ;; (add-hook 'comint-mode-hook 'my-tab-expand)
-
+;;
 ;; OR
 ;;
 ;; (defun indent-or-expand (arg)
@@ -337,21 +291,10 @@
 ;;       (dabbrev-expand arg)
 ;;     (indent-according-to-mode)))
 
-;; (defun my-tab-fix ()
-;;   (local-set-key [tab] 'indent-or-expand))
-
-
-;; (add-hook 'c-mode-hook          'my-tab-fix)
-;; (add-hook 'sh-mode-hook         'my-tab-fix)
-;; (add-hook 'emacs-lisp-mode-hook 'my-tab-fix)
-;; (add-hook 'LaTeX-mode-hook      'my-tab-fix)
-;; (add-hook 'matlab-mode-hook     'my-tab-fix)
-;; (add-hook 'python-mode-hook     'my-tab-fix)
-;; more mode hooks, yada yada, etc ...
-
 ;;-----------------------------------------------------------------------
 ;; TEXT management
 ;;-----------------------------------------------------------------------
+
 (defun iwb ()
   "indent whole buffer"
   (interactive)
@@ -361,14 +304,6 @@
 
 ;; use auto-fill-mode to wrap lines ('fill paragraph') after fill-column lines
 (setq-default fill-column 80)
-
-;; for GDB/debugging in general
-;; (global-set-key (kbd "<f10>") 'gud-cont) ;; C-c C-r
-;; (global-set-key (kbd "<f9>") 'gud-step);; equiv matlab step in
-;; (global-set-key (kbd "<f8>") 'gud-next) ;; equiv matlab step 1
-;; (globa l-set-key (kbd "<f7>") 'gud-finish) ;; equiv matlab step out
-
-;; tab to column of mark with M-<tab>
 
 ;; (defun itc ()
 ;;    "indent to column of mark"
@@ -388,9 +323,6 @@
 (require 'coffee-mode)
 ;; (autoload 'coffee-mode "coffeescript" "Enter coffee-mode" t)
 (add-to-list 'auto-mode-alist '("\\.coffee\\'" . python-mode))
-
-;; (setq whitespace-action '(auto-cleanup)) ;; automatically clean up bad whitespace
-;; (setq whitespace-style '(trailing space-before-tab indentation empty space-after-tab)) ;; only show bad whitespace
 
 ;;-----------------------------------------------------------------------
 ;; shell programming
@@ -433,15 +365,6 @@
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 
-;; is this working?? installed in .emacs.d/lisp and info file /usr/share/info/latex2e.info
-;; (define-key help-map "\C-l" 'latex-help)
-;; (add-hook 'Latex-mode-hook
-;;           (function (lambda ()
-;;                       (define-key LaTeX-mode-map "\C-ci" 'latex-help))))
-;; http://emacswiki.org/emacs/AUCTeX
-
-(put 'dired-find-alternate-file 'disabled nil)
-
 ;;-----------------------------------------------------------------------
 ;; web programming
 ;;-----------------------------------------------------------------------
@@ -459,53 +382,10 @@
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 
-;; http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/
-;; http://curiousprogrammer.wordpress.com/2009/03/27/emacs-comint/
-
-;; (require 'comint)
-;; (define-key comint-mode-map [(meta p)]
-;;    'comint-previous-matching-input-from-input)
-;; (define-key comint-mode-map [(meta n)]
-;;    'comint-next-matching-input-from-input)
-;; (define-key comint-mode-map [(control meta n)]
-;;     'comint-next-input)
-;; (define-key comint-mode-map [(control meta p)]
-;;     'comint-previous-input)
-
-
-;; (setq comint-completion-autolist t
-;;                                      ;list possibilities on partial
-;;                                      ;completion
-;;        comint-completion-recexact nil
-;;                                      ;use shortest compl. if
-;;                                      ;characters cannot be added
-;;        ;; how many history items are stored in comint-buffers (e.g. py-shell)
-;;        ;; use the HISTSIZE environment variable that shells use (if avail.)
-;;        ;; (default is 32)
-;;        comint-input-ring-size (string-to-number (or (getenv "HISTSIZE") "100")))
-
-;; (setq ipython-command "/usr/local/bin/ipython")
-;; (setq py-shell-name "ipython")
-
-;; (setq py-python-command-args '("-pylab" "-colors" "LightBG"))
-;; (setq ipython-completion-command-string "print(';'.join(get_ipython().Completer.complete('%s')[1])) #PYTHON-MODE SILENT\n")
-;; (require 'anything-ipython)
-;; (add-hook 'python-mode-hook #'(lambda ()
-;;                                 (define-key py-mode-map (kbd "<tab>") 'anything-ipython-complete)))
-;; (add-hook 'ipython-shell-hook #'(lambda ()
-;;                                   (define-key py-mode-map (kbd "<tab>") 'anything-ipython-complete)))
-
-;; (defun py-clear ()
-;;   (interactive)
-;;   (let ((comint-buffer-maximum-size 0))
-;;     (comint-truncate-buffer)))
-
 ;;-----------------------------------------------------------------------
 ;; Markdown mode
 ;;-----------------------------------------------------------------------
 (require 'markdown-mode)
-;; (autoload 'markdown-mode "markdown-mode.el"
-;;   "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)) ;github-flavored markdown
 
 ;;-----------------------------------------------------------------------
@@ -533,6 +413,11 @@
   (require 'git-gutter-fringe)
   (add-hook 'python-mode-hook 'git-gutter-mode)
   (add-hook 'matlab-mode-hook 'git-gutter-mode))
+
+(unless (featurep 'aquamacs)
+  (require 'git-gutter)
+  (setq git-gutter:update-threshold nil)
+  (setq git-gutter:update-hooks '(after-save-hook after-revert-hook)))
 
 ;;-----------------------------------------------------------------------
 ;; key bindings
