@@ -117,7 +117,7 @@
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t))
+      `((".*" ,temporary-file-directory t)))
 ;; hide backup files
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
   backup-by-copying t    ; Don't delink hardlinks
@@ -330,6 +330,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.pbs\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.ext\\'" . shell-script-mode))
 
 ;;-----------------------------------------------------------------------
 ;; matlab programming
