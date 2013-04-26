@@ -156,7 +156,16 @@
 (when (featurep 'aquamacs)
   (tool-bar-mode -1)
   (tooltip-mode -1)
-  (global-linum-mode t))
+  (global-linum-mode t)
+
+  ;; set global font
+  (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+
+  ;; set color theme
+  (require 'color-theme)
+  (color-theme-initialize)
+  (color-theme-charcoal-black)
+  (set-face-background 'modeline "#FFEF94"))
 
 ;;-----------------------------------------------------------------------
 ;; appearance
@@ -166,22 +175,13 @@
 (line-number-mode t)
 
 ;; speedbar
+(require 'sr-speedbar)
 (setq resize-mini-windows nil)
 (setq speedbar-use-images nil)
 (setq sr-speedbar-auto-refresh nil)
 (setq sr-speedbar-max-width 100)
 (setq sr-speedbar-width-console 50)
 (setq sr-speedbar-width-x 50)
-
-(when (featurep 'aquamacs)
-  ;; set global font
-  (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-
-  ;; set color theme
-  (require 'color-theme)
-  (color-theme-initialize)
-  (color-theme-charcoal-black)
-  (set-face-background 'modeline "#FFEF94"))
 
 ;; line highlight color
 (global-hl-line-mode 0)
@@ -194,7 +194,16 @@
 ;;   (setq whitespace-style '(face lines-tail))
 ;;   (whitespace-mode t))
 
-(require 'sr-speedbar)
+;;-----------------------------------------------------------------------
+;; tramp
+;;----------------------------------------------------------------------- 
+
+;; only look for hosts in the .ssh/config file
+(require 'tramp)
+(tramp-set-completion-function "ssh"
+           '((tramp-parse-sconfig "~/.ssh/config")))
+(tramp-set-completion-function "scpc"
+           '((tramp-parse-sconfig "~/.ssh/config")))
 
 ;;-----------------------------------------------------------------------
 ;; window switching
@@ -442,6 +451,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
+(define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
