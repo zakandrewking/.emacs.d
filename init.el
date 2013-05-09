@@ -13,7 +13,7 @@
 
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
-(setq clean-buffer-list-deelay-general 0)
+(setq clean-buffer-list-delay-general 0)
 (setq magic-mode-alist ())
 
 ;; http://whattheemacsd.com/file-defuns.el-01.html
@@ -148,6 +148,15 @@
 ;; http://www.emacswiki.org/emacs/InteractivelyDoThings#Ido
 (require 'ido)
 (ido-mode t)
+
+;; stop annoying "Command attempted to use minibuffer while in minibuffer."
+;; http://trey-jackson.blogspot.com/2010/04/emacs-tip-36-abort-minibuffer-when.html
+(defun stop-using-minibuffer ()
+  "kill the minibuffer"
+  (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
+    (abort-recursive-edit)))
+
+(add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
 
 ;;-----------------------------------------------------------------------
 ;; aquamacs
