@@ -59,9 +59,9 @@
 		 :type github
 		 :pkgname "emacsmirror/nxhtml"
 		 :prepare (progn
-			    (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-			    ))
-	  )
+			    (load "~/.emacs.d/el-get/nxhtml/autostart.el"))
+		 )
+	  ) 
   )
   (setq my-packages
         (append
@@ -94,6 +94,10 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
   )
+
+;;-----------------------------------------------------------------------
+;; copy-paste
+;;-----------------------------------------------------------------------
 
 ;; system copy paste
 (defun pt-pbpaste ()
@@ -132,7 +136,6 @@
 ;;-----------------------------------------------------------------------
 
 ;; kill the characters from the cursor to the beginning of the current line
-;; C-u
 (defun backward-kill-line (arg)
   "Kill chars backward until encountering the end of a line."
   (interactive "p")
@@ -446,7 +449,7 @@
 
 (define-key my-keys-minor-mode-map (kbd "C-c d") 'deft)
 (define-key my-keys-minor-mode-map (kbd "C-c q") 'auto-fill-mode)
-(define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line)
+;; (define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line) ;; C-u: universal-argument
 (define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
 (define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
@@ -466,3 +469,5 @@
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
 (my-keys-minor-mode 1)
+
+(global-unset-key (kbd "C-z"))
