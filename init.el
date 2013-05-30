@@ -95,6 +95,8 @@
   (setq mouse-sel-mode t)
   )
 
+(setq large-file-warning-threshold 5000000)
+
 ;;-----------------------------------------------------------------------
 ;; copy-paste
 ;;-----------------------------------------------------------------------
@@ -259,7 +261,8 @@
 ;; pabbrev
 (require 'pabbrev)
 (defun pabbrev-hook ()
-  (pabbrev-mode 1))
+  (pabbrev-mode 1)
+  (setq pabbrev-minimal-expansion-p 1))
 (add-hook 'c-mode-hook             'pabbrev-hook)
 (add-hook 'sh-mode-hook            'pabbrev-hook)
 (add-hook 'emacs-lisp-mode-hook    'pabbrev-hook)
@@ -268,8 +271,8 @@
 (add-hook 'python-mode-hook        'pabbrev-hook)
 (add-hook 'nxhtml-mode-hook             'pabbrev-hook)
 (add-hook 'nxhtml-mumamo-mode-hook      'pabbrev-hook)
-(add-hook 'org-mode-hook           'pabbrev-hook)
-(add-hook 'javascript-mode-hook    'pabbrev-hook)
+(add-hook 'org-mode-hook           	'pabbrev-hook)
+(add-hook 'js-mode-hook    		'pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
