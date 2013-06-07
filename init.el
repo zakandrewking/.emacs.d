@@ -1,6 +1,7 @@
 ;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
+
 ;; set default directory
 (let ((default-directory "~/.emacs.d/lisp/"))
   (normal-top-level-add-to-load-path '("."))
@@ -60,12 +61,11 @@
 		 :pkgname "emacsmirror/nxhtml"
 		 :prepare (progn
 			    (load "~/.emacs.d/el-get/nxhtml/autostart.el"))
-		 )
-	  ) 
+		 ))
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml git-gutter)
+         '(el-get cedet matlab-mode nxhtml git-gutter python-mode)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -341,14 +341,6 @@
 ;; (global-set-key (kbd "M-<tab>") 'itc)
 
 ;;-----------------------------------------------------------------------
-;; coffee programming
-;;-----------------------------------------------------------------------
-
-(require 'coffee-mode)
-;; (autoload 'coffee-mode "coffeescript" "Enter coffee-mode" t)
-(add-to-list 'auto-mode-alist '("\\.coffee\\'" . python-mode))
-
-;;-----------------------------------------------------------------------
 ;; shell programming
 ;;-----------------------------------------------------------------------
 
@@ -399,13 +391,6 @@
 (custom-set-faces
  '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
  '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold)))))
-
-;;-----------------------------------------------------------------------
-;; python programming
-;;-----------------------------------------------------------------------
-
-(require 'python-mode)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 
 ;;-----------------------------------------------------------------------
 ;; Markdown mode
