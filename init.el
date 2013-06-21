@@ -1,6 +1,7 @@
 ;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
+
 ;; set default directory
 (let ((default-directory "~/.emacs.d/lisp/"))
   (normal-top-level-add-to-load-path '("."))
@@ -13,7 +14,7 @@
 
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
-(setq clean-buffer-list-deelay-general 0)
+(setq clean-buffer-list-delay-general 0)
 (setq magic-mode-alist ())
 
 ;; http://whattheemacsd.com/file-defuns.el-01.html
@@ -59,13 +60,12 @@
 		 :type github
 		 :pkgname "emacsmirror/nxhtml"
 		 :prepare (progn
-			    (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-			    ))
-	  )
+			    (load "~/.emacs.d/el-get/nxhtml/autostart.el"))
+		 ))
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml git-gutter)
+         '(el-get cedet matlab-mode nxhtml git-gutter python-mode)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -94,6 +94,12 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
   )
+
+(setq large-file-warning-threshold 5000000)
+
+;;-----------------------------------------------------------------------
+;; copy-paste
+;;-----------------------------------------------------------------------
 
 ;; system copy paste
 (defun pt-pbpaste ()
@@ -132,7 +138,6 @@
 ;;-----------------------------------------------------------------------
 
 ;; kill the characters from the cursor to the beginning of the current line
-;; C-u
 (defun backward-kill-line (arg)
   "Kill chars backward until encountering the end of a line."
   (interactive "p")
@@ -149,6 +154,15 @@
 (require 'ido)
 (ido-mode t)
 
+;; stop annoying "Command attempted to use minibuffer while in minibuffer."
+;; http://trey-jackson.blogspot.com/2010/04/emacs-tip-36-abort-minibuffer-when.html
+(defun stop-using-minibuffer ()
+  "kill the minibuffer"
+  (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
+    (abort-recursive-edit)))
+
+(add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
+
 ;;-----------------------------------------------------------------------
 ;; aquamacs
 ;;-----------------------------------------------------------------------
@@ -156,7 +170,16 @@
 (when (featurep 'aquamacs)
   (tool-bar-mode -1)
   (tooltip-mode -1)
-  (global-linum-mode t))
+  (global-linum-mode t)
+
+  ;; set global font
+  (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
+
+  ;; set color theme
+  (require 'color-theme)
+  (color-theme-initialize)
+  (color-theme-charcoal-black)
+  (set-face-background 'modeline "#FFEF94"))
 
 ;;-----------------------------------------------------------------------
 ;; appearance
@@ -166,22 +189,13 @@
 (line-number-mode t)
 
 ;; speedbar
+(require 'sr-speedbar)
 (setq resize-mini-windows nil)
 (setq speedbar-use-images nil)
 (setq sr-speedbar-auto-refresh nil)
 (setq sr-speedbar-max-width 100)
 (setq sr-speedbar-width-console 50)
 (setq sr-speedbar-width-x 50)
-
-(when (featurep 'aquamacs)
-  ;; set global font
-  (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-
-  ;; set color theme
-  (require 'color-theme)
-  (color-theme-initialize)
-  (color-theme-charcoal-black)
-  (set-face-background 'modeline "#FFEF94"))
 
 ;; line highlight color
 (global-hl-line-mode 0)
@@ -194,7 +208,16 @@
 ;;   (setq whitespace-style '(face lines-tail))
 ;;   (whitespace-mode t))
 
-(require 'sr-speedbar)
+;;-----------------------------------------------------------------------
+;; tramp
+;;----------------------------------------------------------------------- 
+
+;; only look for hosts in the .ssh/config file
+(require 'tramp)
+(tramp-set-completion-function "ssh"
+           '((tramp-parse-sconfig "~/.ssh/config")))
+(tramp-set-completion-function "scpc"
+           '((tramp-parse-sconfig "~/.ssh/config")))
 
 ;;-----------------------------------------------------------------------
 ;; window switching
@@ -238,7 +261,8 @@
 ;; pabbrev
 (require 'pabbrev)
 (defun pabbrev-hook ()
-  (pabbrev-mode 1))
+  (pabbrev-mode 1)
+  (setq pabbrev-minimal-expansion-p 1))
 (add-hook 'c-mode-hook             'pabbrev-hook)
 (add-hook 'sh-mode-hook            'pabbrev-hook)
 (add-hook 'emacs-lisp-mode-hook    'pabbrev-hook)
@@ -247,8 +271,8 @@
 (add-hook 'python-mode-hook        'pabbrev-hook)
 (add-hook 'nxhtml-mode-hook             'pabbrev-hook)
 (add-hook 'nxhtml-mumamo-mode-hook      'pabbrev-hook)
-(add-hook 'org-mode-hook           'pabbrev-hook)
-(add-hook 'javascript-mode-hook    'pabbrev-hook)
+(add-hook 'org-mode-hook           	'pabbrev-hook)
+(add-hook 'js-mode-hook    		'pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
@@ -317,14 +341,6 @@
 ;; (global-set-key (kbd "M-<tab>") 'itc)
 
 ;;-----------------------------------------------------------------------
-;; coffee programming
-;;-----------------------------------------------------------------------
-
-(require 'coffee-mode)
-;; (autoload 'coffee-mode "coffeescript" "Enter coffee-mode" t)
-(add-to-list 'auto-mode-alist '("\\.coffee\\'" . python-mode))
-
-;;-----------------------------------------------------------------------
 ;; shell programming
 ;;-----------------------------------------------------------------------
 
@@ -377,13 +393,6 @@
  '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold)))))
 
 ;;-----------------------------------------------------------------------
-;; python programming
-;;-----------------------------------------------------------------------
-
-(require 'python-mode)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-
-;;-----------------------------------------------------------------------
 ;; Markdown mode
 ;;-----------------------------------------------------------------------
 (require 'markdown-mode)
@@ -428,7 +437,7 @@
 
 (define-key my-keys-minor-mode-map (kbd "C-c d") 'deft)
 (define-key my-keys-minor-mode-map (kbd "C-c q") 'auto-fill-mode)
-(define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line)
+;; (define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line) ;; C-u: universal-argument
 (define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
 (define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
@@ -448,3 +457,5 @@
   "A minor mode so that my key settings override annoying major modes."
   t " my-keys" 'my-keys-minor-mode-map)
 (my-keys-minor-mode 1)
+
+(global-unset-key (kbd "C-z"))
