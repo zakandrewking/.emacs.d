@@ -16,6 +16,7 @@
 (desktop-save-mode 1)
 (setq clean-buffer-list-delay-general 0)
 (setq magic-mode-alist ())
+(setq tab-width 4)
 
 ;; http://whattheemacsd.com/file-defuns.el-01.html
 (defun rename-file-and-buffer ()
@@ -60,12 +61,42 @@
 		 :type github
 		 :pkgname "emacsmirror/nxhtml"
 		 :prepare (progn
-			    (load "~/.emacs.d/el-get/nxhtml/autostart.el"))
-		 ))
+			    (load "~/.emacs.d/el-get/nxhtml/autostart.el")
+			    ;; Workaround the annoying warnings:
+			    ;;    Warning (mumamo-per-buffer-local-vars):
+			    ;;    Already 'permanent-local t: buffer-file-name
+			    (when (and (>= emacs-major-version 24)
+				       (>= emacs-minor-version 2))
+			      (eval-after-load "mumamo"
+				'(setq mumamo-per-buffer-local-vars
+				       (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+			    ) 
+		 )
+	  (:name python-mode
+		 :after (progn
+			  (setq tab-width 4)
+			  (setq py-indent-offset 4))
+		 )
+	  (:name js2-mode
+		 :after (progn
+			  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+			  )
+		 )
+	  ;; (:name simp
+	  ;; 	 :type github
+	  ;; 	 :pkgname "re5et/simp"
+	  ;; 	 :prepare (progn
+	  ;; 		    (require 'simp)
+	  ;; 		    (simp-project-define
+	  ;; 		     '(:has (.git)
+	  ;; 			    :ignore (.git)))
+	  ;; 		    )
+	  ;; 	 )
+	  )
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml git-gutter python-mode)
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode) ;; ein simp git-gutter
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -188,14 +219,14 @@
 (column-number-mode t)
 (line-number-mode t)
 
-;; speedbar
-(require 'sr-speedbar)
-(setq resize-mini-windows nil)
-(setq speedbar-use-images nil)
-(setq sr-speedbar-auto-refresh nil)
-(setq sr-speedbar-max-width 100)
-(setq sr-speedbar-width-console 50)
-(setq sr-speedbar-width-x 50)
+;; ;; speedbar
+;; (require 'sr-speedbar)
+;; (setq resize-mini-windows nil)
+;; (setq speedbar-use-images nil)
+;; (setq sr-speedbar-auto-refresh nil)
+;; (setq sr-speedbar-max-width 100)
+;; (setq sr-speedbar-width-console 50)
+;; (setq sr-speedbar-width-x 50)
 
 ;; line highlight color
 (global-hl-line-mode 0)
@@ -260,6 +291,11 @@
 
 ;; pabbrev
 (require 'pabbrev)
+
+(defun pabbrev-get-previous-binding ()
+  "override default"
+  (nil))
+
 (defun pabbrev-hook ()
   (pabbrev-mode 1)
   (setq pabbrev-minimal-expansion-p 1))
@@ -273,6 +309,7 @@
 (add-hook 'nxhtml-mumamo-mode-hook      'pabbrev-hook)
 (add-hook 'org-mode-hook           	'pabbrev-hook)
 (add-hook 'js-mode-hook    		'pabbrev-hook)
+(add-hook 'js2-mode-hook    		'pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
@@ -418,16 +455,9 @@
 ;;-----------------------------------------------------------------------
 ;; git gutter
 ;;-----------------------------------------------------------------------
-
-(when (featurep 'aquamacs)
-  (require 'git-gutter-fringe)
-  (add-hook 'python-mode-hook 'git-gutter-mode)
-  (add-hook 'matlab-mode-hook 'git-gutter-mode))
-
-(unless (featurep 'aquamacs)
-  (require 'git-gutter)
-  (setq git-gutter:update-threshold nil)
-  (setq git-gutter:update-hooks '(after-save-hook after-revert-hook)))
+  ;; (require 'git-gutter)
+  ;; (setq git-gutter:update-threshold nil)
+  ;; (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
 
 ;;-----------------------------------------------------------------------
 ;; key bindings
@@ -445,13 +475,14 @@
 (define-key my-keys-minor-mode-map "\C-xo" 'my-other-window)
 (define-key my-keys-minor-mode-map "\C-co" 'switch-to-minibuffer)
 (define-key my-keys-minor-mode-map "\C-x\ \C-k" 'kill-buffer)
-(define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
-(define-key my-keys-minor-mode-map (kbd "C-c g") 'git-gutter:toggle)
+;; (define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
+;; (define-key my-keys-minor-mode-map (kbd "C-c g") 'git-gutter:toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'linum-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
+(define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
