@@ -356,6 +356,18 @@
 ;; TEXT management
 ;;-----------------------------------------------------------------------
 
+(defun indent-return-indent ()
+  "indent current line, then return, and intent next line"
+  (interactive)
+  (indent-for-tab-command)
+  (newline-and-indent))
+
+(defun indent-return-comment-indent ()
+  "indent current line, then return new comment line, and intent"
+  (interactive)
+  (indent-for-tab-command)
+  (indent-new-comment-line))
+
 (defun iwb ()
   "indent whole buffer"
   (interactive)
@@ -483,6 +495,8 @@
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
+(define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
+(define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
