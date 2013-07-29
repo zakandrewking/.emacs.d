@@ -70,6 +70,11 @@
 			      (eval-after-load "mumamo"
 				'(setq mumamo-per-buffer-local-vars
 				       (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+			    ;; fix white background in mumamo modes
+			    (custom-set-faces
+			     '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+			     '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+			     '(mumamo-region ((t nil))))
 			    ) 
 		 )
 	  (:name python-mode
@@ -96,7 +101,7 @@
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode) ;; ein simp git-gutter
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode slime) ;; ein simp git-gutter  haskell-mode
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
