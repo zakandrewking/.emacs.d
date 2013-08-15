@@ -383,6 +383,20 @@
 ;; use auto-fill-mode to wrap lines ('fill paragraph') after fill-column lines
 (setq-default fill-column 80)
 
+(defun unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
+    (fill-paragraph nil)))
+
+(defun unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column 90002000))
+    (fill-region start end)))
+
 ;; (defun itc ()
 ;;    "indent to column of mark"
 ;;    (interactive)
