@@ -87,21 +87,18 @@
 			  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 			  )
 		 )
-	  ;; (:name simp
-	  ;; 	 :type github
-	  ;; 	 :pkgname "re5et/simp"
-	  ;; 	 :prepare (progn
-	  ;; 		    (require 'simp)
-	  ;; 		    (simp-project-define
-	  ;; 		     '(:has (.git)
-	  ;; 			    :ignore (.git)))
-	  ;; 		    )
-	  ;; 	 )
+	  (:name ag.el
+		 :type github
+		 :pkgname "Wilfred/ag.el"
+		 :after (progn
+			  (setq ag-reuse-buffers 't)
+			  (setq ag-highlight-search t))
+		 )
 	  )
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode slime) ;; ein simp git-gutter  haskell-mode
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -113,7 +110,7 @@
   (load-theme 'wombat t)
 
   ;; linum-mode
-  (global-linum-mode 1)
+  (global-linum-mode 0)
   (setq linum-format "%3d ")
   )
 
