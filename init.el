@@ -130,6 +130,19 @@
 
 (setq large-file-warning-threshold 5000000)
 
+;; Use ido-find-file from ibuffer window
+(require 'ibuffer)
+(defun ibuffer-ido-find-file ()
+  "Like `ido-find-file', but default to the directory of the buffer at point."
+  (interactive
+   (let ((default-directory (let ((buf (ibuffer-current-buffer)))
+			            (if (buffer-live-p buf)
+					  (with-current-buffer buf
+					        default-directory)
+				      default-directory))))
+     (ido-find-file-in-dir default-directory))))
+(define-key ibuffer-mode-map "\C-x\C-f" 'ibuffer-ido-find-file)
+
 ;;-----------------------------------------------------------------------
 ;; copy-paste
 ;;-----------------------------------------------------------------------
@@ -275,6 +288,8 @@
   (interactive)
   (select-window (next-window nil 'never-minibuf nil)))
 
+
+
 ;;-----------------------------------------------------------------------
 ;; flymake
 ;;-----------------------------------------------------------------------
@@ -304,7 +319,7 @@
 (add-hook 'c-mode-hook             'pabbrev-hook)
 (add-hook 'sh-mode-hook            'pabbrev-hook)
 (add-hook 'emacs-lisp-mode-hook    'pabbrev-hook)
-(add-hook 'LaTeX-mode-hook         'pabbrev-hook)
+(add-hook 'latex-mode-hook         'pabbrev-hook)
 (add-hook 'matlab-mode-hook        'pabbrev-hook)
 (add-hook 'python-mode-hook        'pabbrev-hook)
 (add-hook 'nxhtml-mode-hook             'pabbrev-hook)
@@ -444,8 +459,12 @@ This command does the inverse of `fill-region'."
 ;; Latex programming
 ;;-----------------------------------------------------------------------
 
-(autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(defun vlm-hook ()
+   (visual-line-mode 1))
+(add-hook 'latex-mode-hook 'vlm-hook)
+
+;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
+;; (add-hook 'latex-mode-hook 'flyspell-mode)
 
 ;;-----------------------------------------------------------------------
 ;; web programming
