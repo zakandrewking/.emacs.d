@@ -75,6 +75,9 @@
 			     '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
 			     '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
 			     '(mumamo-region ((t nil))))
+			    
+			    (setq mumamo-chunk-coloring 5)
+			    ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
 			    ) 
 		 )
 	  (:name python-mode
@@ -94,11 +97,16 @@
 			  (setq ag-reuse-buffers 't)
 			  (setq ag-highlight-search t))
 		 )
+	  (:name web-mode
+		 :after (progn
+			  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+			  )
+		 )
 	  )
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5)
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5 web-mode)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -467,16 +475,6 @@ This command does the inverse of `fill-region'."
 ;; (add-hook 'latex-mode-hook 'flyspell-mode)
 
 ;;-----------------------------------------------------------------------
-;; web programming
-;;-----------------------------------------------------------------------
-
-(add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
-(setq mumamo-chunk-coloring 5)
-(custom-set-faces
- '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
- '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold)))))
-
-;;-----------------------------------------------------------------------
 ;; Markdown mode
 ;;-----------------------------------------------------------------------
 (require 'markdown-mode)
@@ -528,6 +526,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
+(define-key my-keys-minor-mode-map (kbd "C-c m") 'nxhtml-mumamo-mode)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
 (define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
