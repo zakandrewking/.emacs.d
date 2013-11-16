@@ -58,56 +58,61 @@
   ;; local sources
   (setq el-get-sources
         '((:name nxhtml
-		 :type github
-		 :pkgname "emacsmirror/nxhtml"
-		 :prepare (progn
-			    (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-			    ;; Workaround the annoying warnings:
-			    ;;    Warning (mumamo-per-buffer-local-vars):
-			    ;;    Already 'permanent-local t: buffer-file-name
-			    (when (and (>= emacs-major-version 24)
-				       (>= emacs-minor-version 2))
-			      (eval-after-load "mumamo"
-				'(setq mumamo-per-buffer-local-vars
-				       (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-			    ;; fix white background in mumamo modes
-			    (custom-set-faces
-			     '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			     '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			     '(mumamo-region ((t nil))))
-			    
-			    (setq mumamo-chunk-coloring 5)
-			    ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
-			    ) 
-		 )
-	  (:name python-mode
-		 :after (progn
-			  (setq tab-width 4)
-			  (setq py-indent-offset 4))
-		 )
-	  (:name js2-mode
-		 :after (progn
-			  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-			  )
-		 )
-	  (:name ag.el
-		 :type github
-		 :pkgname "Wilfred/ag.el"
-		 :after (progn
-			  (setq ag-reuse-buffers 't)
-			  (setq ag-highlight-search t))
-		 )
-	  (:name web-mode
-		 :after (progn
-			  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-			  )
-		 )
-	  )
-  )
+                 :type github
+                 :pkgname "emacsmirror/nxhtml"
+                 :prepare (progn
+                            (load "~/.emacs.d/el-get/nxhtml/autostart.el")
+                            ;; Workaround the annoying warnings:
+                            ;;    Warning (mumamo-per-buffer-local-vars):
+                            ;;    Already 'permanent-local t: buffer-file-name
+                            (when (and (>= emacs-major-version 24)
+                                       (>= emacs-minor-version 2))
+                              (eval-after-load "mumamo"
+                                '(setq mumamo-per-buffer-local-vars
+                                       (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+                            ;; fix white background in mumamo modes
+                            (custom-set-faces
+                             '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face
+                                                                   :underline t :weight bold))))
+                             '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face
+                                                                    :underline t :weight bold))))
+                             '(mumamo-region ((t nil))))
+
+                            (setq mumamo-chunk-coloring 5)
+                            ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
+                            )
+                 )
+          (:name python-mode
+                 :after (progn
+                          (setq tab-width 4)
+                          (setq py-indent-offset 4))
+                 )
+          (:name js2-mode
+                 :after (progn
+                          (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+                          )
+                 )
+          (:name ag.el
+                 :type github
+                 :pkgname "Wilfred/ag.el"
+                 :after (progn
+                          (setq ag-reuse-buffers 't)
+                          (setq ag-highlight-search t))
+                 )
+          (:name web-mode
+                 :after (progn
+                          (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+                          )
+                 )
+          (:name browse-kill-ring
+                 :after (browse-kill-ring-default-keybindings)
+                 )
+          )
+        )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5 web-mode)
-	 (mapcar 'el-get-source-name el-get-sources)))
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5 web-mode browse-kill-ring rainbow-mode)
+         (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
   (el-get 'sync my-packages)
@@ -144,10 +149,10 @@
   "Like `ido-find-file', but default to the directory of the buffer at point."
   (interactive
    (let ((default-directory (let ((buf (ibuffer-current-buffer)))
-			            (if (buffer-live-p buf)
-					  (with-current-buffer buf
-					        default-directory)
-				      default-directory))))
+                              (if (buffer-live-p buf)
+                                  (with-current-buffer buf
+                                    default-directory)
+                                default-directory))))
      (ido-find-file-in-dir default-directory))))
 (define-key ibuffer-mode-map "\C-x\C-f" 'ibuffer-ido-find-file)
 
@@ -180,12 +185,12 @@
       `((".*" ,temporary-file-directory t)))
 ;; hide backup files
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-  backup-by-copying t    ; Don't delink hardlinks
-  version-control t      ; Use version numbers on backups
-  delete-old-versions t  ; Automatically delete excess backups
-  kept-new-versions 20   ; how many of the newest versions to keep
-  kept-old-versions 5    ; and how many of the old
-  )
+      backup-by-copying t    ; Don't delink hardlinks
+      version-control t      ; Use version numbers on backups
+      delete-old-versions t  ; Automatically delete excess backups
+      kept-new-versions 20   ; how many of the newest versions to keep
+      kept-old-versions 5    ; and how many of the old
+      )
 
 ;;-----------------------------------------------------------------------
 ;; movement
@@ -264,14 +269,14 @@
 
 ;;-----------------------------------------------------------------------
 ;; tramp
-;;----------------------------------------------------------------------- 
+;;-----------------------------------------------------------------------
 
 ;; only look for hosts in the .ssh/config file
 (require 'tramp)
 (tramp-set-completion-function "ssh"
-           '((tramp-parse-sconfig "~/.ssh/config")))
+                               '((tramp-parse-sconfig "~/.ssh/config")))
 (tramp-set-completion-function "scpc"
-           '((tramp-parse-sconfig "~/.ssh/config")))
+                               '((tramp-parse-sconfig "~/.ssh/config")))
 
 ;;-----------------------------------------------------------------------
 ;; window switching
@@ -332,9 +337,9 @@
 (add-hook 'python-mode-hook        'pabbrev-hook)
 (add-hook 'nxhtml-mode-hook             'pabbrev-hook)
 (add-hook 'nxhtml-mumamo-mode-hook      'pabbrev-hook)
-(add-hook 'org-mode-hook           	'pabbrev-hook)
-(add-hook 'js-mode-hook    		'pabbrev-hook)
-(add-hook 'js2-mode-hook    		'pabbrev-hook)
+(add-hook 'org-mode-hook                'pabbrev-hook)
+(add-hook 'js-mode-hook                 'pabbrev-hook)
+(add-hook 'js2-mode-hook                'pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
@@ -468,7 +473,7 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 
 (defun vlm-hook ()
-   (visual-line-mode 1))
+  (visual-line-mode 1))
 (add-hook 'latex-mode-hook 'vlm-hook)
 
 ;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
@@ -500,9 +505,9 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 ;; git gutter
 ;;-----------------------------------------------------------------------
-  ;; (require 'git-gutter)
-  ;; (setq git-gutter:update-threshold nil)
-  ;; (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
+;; (require 'git-gutter)
+;; (setq git-gutter:update-threshold nil)
+;; (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
 
 ;;-----------------------------------------------------------------------
 ;; key bindings
