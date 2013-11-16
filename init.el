@@ -102,11 +102,21 @@
 			  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 			  )
 		 )
+	  (:name sr-speedbar
+		 :after (progn
+			  (setq resize-mini-windows nil)
+			  (setq speedbar-use-images nil)
+			  (setq sr-speedbar-auto-refresh nil)
+			  (setq sr-speedbar-max-width 100)
+			  (setq sr-speedbar-width-console 50)
+			  (setq sr-speedbar-width-x 50)
+			  )
+		 )
 	  )
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5 web-mode)
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5 web-mode sr-speedbar json)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -241,15 +251,6 @@
 
 (column-number-mode t)
 (line-number-mode t)
-
-;; ;; speedbar
-;; (require 'sr-speedbar)
-;; (setq resize-mini-windows nil)
-;; (setq speedbar-use-images nil)
-;; (setq sr-speedbar-auto-refresh nil)
-;; (setq sr-speedbar-max-width 100)
-;; (setq sr-speedbar-width-console 50)
-;; (setq sr-speedbar-width-x 50)
 
 ;; line highlight color
 (global-hl-line-mode 0)
@@ -520,13 +521,14 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map "\C-xo" 'my-other-window)
 (define-key my-keys-minor-mode-map "\C-co" 'switch-to-minibuffer)
 (define-key my-keys-minor-mode-map "\C-x\ \C-k" 'kill-buffer)
-;; (define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
+(define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
 ;; (define-key my-keys-minor-mode-map (kbd "C-c g") 'git-gutter:toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'linum-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'nxhtml-mumamo-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c w") 'visual-line-mode)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
 (define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
