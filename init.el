@@ -58,7 +58,6 @@
   ;; local sources
   (setq el-get-sources
         '((:name nxhtml
-<<<<<<< HEAD
 		 :type github
 		 :pkgname "emacsmirror/nxhtml"
 		 :prepare (progn
@@ -433,6 +432,26 @@ This command does the inverse of `fill-region'."
 ;;    (indent-to-column col))
 ;; (global-set-key (kbd "M-<tab>") 'itc)
 
+;; Use C-s C-M-w C-s to search word symbol at point
+;; http://www.emacswiki.org/emacs/SearchAtPoint
+(require 'etags)
+(defun isearch-yank-regexp (regexp)
+  "Pull REGEXP into search regexp." 
+  (let ((isearch-regexp nil)) ;; Dynamic binding of global.
+    (isearch-yank-string regexp))
+  (if (not isearch-regexp)
+      (isearch-toggle-regexp))
+  (isearch-search-and-update))
+(defun isearch-yank-symbol ()
+  "Put symbol at current point into search string."
+  (interactive)
+  (let ((sym (find-tag-default)))
+    (if (null sym)
+	(message "No symbol at point")
+      (isearch-yank-regexp
+       (concat "\\_<" (regexp-quote sym) "\\_>")))))
+(define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
+
 ;;-----------------------------------------------------------------------
 ;; shell programming
 ;;-----------------------------------------------------------------------
@@ -497,6 +516,10 @@ This command does the inverse of `fill-region'."
 (put 'erase-buffer 'disabled nil)
 (put 'toggle-mac-option-modifier 'disabled t)
 
+;;-----------------------------------------------------------------------
+;; Org mode
+;;-----------------------------------------------------------------------
+
 ;; always open text in org-mode
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
 
@@ -537,6 +560,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
 (define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
 (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
+(define-key my-keys-minor-mode-map (kbd "C-c 9") 'org-cycle)
+(define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
