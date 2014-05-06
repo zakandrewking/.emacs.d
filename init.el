@@ -100,6 +100,8 @@
 	  (:name web-mode
 		 :after (progn
 			  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+			  (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
+			  (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
 			  )
 		 )
 	  (:name sr-speedbar
