@@ -115,11 +115,18 @@
           (:name browse-kill-ring
                  :after (browse-kill-ring-default-keybindings)
                  )
+	  (:name yaml-mode
+		 :after (progn
+			  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+			  )
+		 )
           )
   )
   (setq my-packages
         (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5 web-mode sr-speedbar json browse-kill-ring rainbow-mode)
+         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
+		  web-mode sr-speedbar json browse-kill-ring rainbow-mode
+		  yaml-mode)
 	 (mapcar 'el-get-source-name el-get-sources)))
 
   (el-get-cleanup my-packages)
@@ -509,7 +516,7 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 
 (require 'deft)
-(setq deft-directory "~/Dropbox/PlainText/")
+(setq deft-directory "~/Dropbox (Personal)/PlainText/")
 (setq deft-extension "txt")
 (setq deft-text-mode 'org-mode)
 (setq deft-use-filename-as-title t)
