@@ -42,107 +42,110 @@
 ;; no menu bar
 (menu-bar-mode -1)
 
-;; terminal emacs
-(unless (featurep 'aquamacs)
-  ;; Set up el-get
-  (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+;; Set up el-get
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
-  (unless (require 'el-get nil 'noerror)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-      (let (el-get-master-branch)
-        (goto-char (point-max))
-        (eval-print-last-sexp))))
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
 
-  ;; local sources
-  (setq el-get-sources
-        '((:name nxhtml
-		 :type github
-		 :pkgname "emacsmirror/nxhtml"
-		 :prepare (progn
-			    (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-			    ;; Workaround the annoying warnings:
-			    ;;    Warning (mumamo-per-buffer-local-vars):
-			    ;;    Already 'permanent-local t: buffer-file-name
-			    (when (and (>= emacs-major-version 24)
-				       (>= emacs-minor-version 2))
-			      (eval-after-load "mumamo"
-				'(setq mumamo-per-buffer-local-vars
-				       (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-			    ;; fix white background in mumamo modes
-			    (custom-set-faces
-			     '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			     '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			     '(mumamo-region ((t nil))))
-			    
-			    (setq mumamo-chunk-coloring 5)
-			    ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
-			    ) 
-		 )
-	  (:name python-mode
-		 :after (progn
-			  (setq tab-width 4)
-			  (setq py-indent-offset 4))
-		 )
-	  (:name js2-mode
-		 :after (progn
-			  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-			  )
-		 )
-	  (:name ag.el
-		 :type github
-		 :pkgname "Wilfred/ag.el"
-		 :after (progn
-			  (setq ag-reuse-buffers 't)
-			  (setq ag-highlight-search t))
-		 )
-	  (:name web-mode
-		 :after (progn
-			  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-			  (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
-			  (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
-			  )
-		 )
-	  (:name sr-speedbar
-		 :after (progn
-			  (setq resize-mini-windows nil)
-			  (setq speedbar-use-images nil)
-			  (setq sr-speedbar-auto-refresh nil)
-			  (setq sr-speedbar-max-width 100)
-			  (setq sr-speedbar-width-console 50)
-			  (setq sr-speedbar-width-x 50)
-			  )
-		 )
-          (:name browse-kill-ring
-                 :after (browse-kill-ring-default-keybindings)
-                 )
-	  (:name yaml-mode
-		 :after (progn
-			  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-			  )
-		 )
-          )
-  )
-  (setq my-packages
-        (append
-         '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
-		  web-mode sr-speedbar json browse-kill-ring rainbow-mode
-		  yaml-mode)
-	 (mapcar 'el-get-source-name el-get-sources)))
+;; local sources
+(setq el-get-sources
+      '((:name nxhtml
+			   :type github
+			   :pkgname "emacsmirror/nxhtml"
+			   :prepare (progn
+						  (load "~/.emacs.d/el-get/nxhtml/autostart.el")
+						  ;; Workaround the annoying warnings:
+						  ;;    Warning (mumamo-per-buffer-local-vars):
+						  ;;    Already 'permanent-local t: buffer-file-name
+						  (when (and (>= emacs-major-version 24)
+									 (>= emacs-minor-version 2))
+							(eval-after-load "mumamo"
+							  '(setq mumamo-per-buffer-local-vars
+									 (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+						  ;; fix white background in mumamo modes
+						  (custom-set-faces
+						   '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+						   '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+						   '(mumamo-region ((t nil))))
+						  
+						  (setq mumamo-chunk-coloring 5)
+						  ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
+						  ) 
+			   )
+		(:name python-mode
+			   :after (progn
+						(setq tab-width 4)
+						(setq py-indent-offset 4))
+			   )
+		(:name js2-mode
+			   :after (progn
+						(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+						)
+			   )
+		(:name ag.el
+			   :type github
+			   :pkgname "Wilfred/ag.el"
+			   :after (progn
+						(setq ag-reuse-buffers 't)
+						(setq ag-highlight-search t))
+			   )
+		(:name web-mode
+			   :after (progn
+						(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+						(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
+						(setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
+						)
+			   )
+		(:name sr-speedbar
+			   :after (progn
+						(setq resize-mini-windows nil)
+						(setq speedbar-use-images nil)
+						(setq sr-speedbar-auto-refresh nil)
+						(setq sr-speedbar-max-width 100)
+						(setq sr-speedbar-width-console 50)
+						(setq sr-speedbar-width-x 50)
+						)
+			   )
+		(:name browse-kill-ring
+			   :after (browse-kill-ring-default-keybindings)
+			   )
+		(:name yaml-mode
+			   :after (progn
+						(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+						)
+			   )
+		(:name evil
+			   :after (progn
+						(require 'evil)
+						)
+			   )
+		)
+      )
+(setq my-packages
+      (append
+       '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
+				web-mode sr-speedbar json browse-kill-ring rainbow-mode
+				yaml-mode evil)
+       (mapcar 'el-get-source-name el-get-sources)))
 
-  (el-get-cleanup my-packages)
-  (el-get 'sync my-packages)
+(el-get-cleanup my-packages)
+(el-get 'sync my-packages)
 
-  ;; color theme
-  ;; Should match terminal color theme,
-  ;; or at least add `export TERM=xterm-256color` to your bash_profile.
-  (load-theme 'wombat t)
+;; color theme
+;; Should match terminal color theme,
+;; or at least add `export TERM=xterm-256color` to your bash_profile.
+(load-theme 'wombat t)
 
-  ;; linum-mode
-  (global-linum-mode 0)
-  (setq linum-format "%3d ")
-  )
+;; linum-mode
+(global-linum-mode 0)
+(setq linum-format "%3d ")
+
 
 (unless window-system
   ;; Enable mouse support
@@ -456,7 +459,7 @@ This command does the inverse of `fill-region'."
   (interactive)
   (let ((sym (find-tag-default)))
     (if (null sym)
-	(message "No symbol at point")
+		(message "No symbol at point")
       (isearch-yank-regexp
        (concat "\\_<" (regexp-quote sym) "\\_>")))))
 (define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
