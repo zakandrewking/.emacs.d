@@ -7,16 +7,163 @@
   (normal-top-level-add-to-load-path '("."))
   (normal-top-level-add-subdirs-to-load-path))
 
-(defun reload-dotemacs ()
-  "reload your .emacs file without restarting Emacs"
-  (interactive)
-  (load-file "~/.emacs") )
-
+;; variables
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
 (setq clean-buffer-list-delay-general 0)
 (setq magic-mode-alist ())
 (setq tab-width 4)
+(menu-bar-mode -1) ; no menu bar
+(setq linum-format "%3d ")
+(setq large-file-warning-threshold 5000000)
+(global-linum-mode 0) ; linum-mode off
+(column-number-mode t)
+(line-number-mode t)
+(global-hl-line-mode 0) ; line highlight color
+
+;; start emacsserver
+(server-start)
+
+;; color theme
+;; Should match terminal color theme,
+;; or at least add `export TERM=xterm-256color` to your bash_profile.
+(load-theme 'wombat t)
+
+;; Enable mouse support
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (global-set-key [mouse-4] '(lambda ()
+                               (interactive)
+                               (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda ()
+                               (interactive)
+                               (scroll-up 1)))
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t)
+  )
+
+;; hide autosaves in temp directory
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+;; hide backup files
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
+      backup-by-copying t    ; Don't delink hardlinks
+      version-control t      ; Use version numbers on backups
+      delete-old-versions t  ; Automatically delete excess backups
+      kept-new-versions 20   ; how many of the newest versions to keep
+      kept-old-versions 5    ; and how many of the old
+      )
+
+;;-----------------------------------------------------------------------
+;; el-get
+;;-----------------------------------------------------------------------
+
+;; Set up el-get
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
+
+;; local sources
+(setq el-get-sources
+      '((:name nxhtml
+	       :type github
+	       :pkgname "emacsmirror/nxhtml"
+	       :prepare (progn
+			  (load "~/.emacs.d/el-get/nxhtml/autostart.el")
+			  ;; Workaround the annoying warnings:
+			  ;;    Warning (mumamo-per-buffer-local-vars):
+			  ;;    Already 'permanent-local t: buffer-file-name
+			  (when (and (>= emacs-major-version 24)
+				     (>= emacs-minor-version 2))
+			    (eval-after-load "mumamo"
+			      '(setq mumamo-per-buffer-local-vars
+				     (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+			  ;; fix white background in mumamo modes
+			  (custom-set-faces
+			   '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+			   '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+			   '(mumamo-region ((t nil))))
+			  
+			  (setq mumamo-chunk-coloring 5)
+			  ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
+			  ) 
+	       )
+	(:name python-mode
+	       :after (progn
+			(setq tab-width 4)
+			(setq py-indent-offset 4))
+	       )
+	(:name js2-mode
+	       :after (progn
+			(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+			)
+	       )
+	(:name ag.el
+	       :type github
+	       :pkgname "Wilfred/ag.el"
+	       :after (progn
+			(setq ag-reuse-buffers 't)
+			(setq ag-highlight-search t))
+	       )
+	(:name web-mode
+	       :after (progn
+			(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+			(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
+			(setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
+			)
+	       )
+	(:name sr-speedbar
+	       :after (progn
+			(setq resize-mini-windows nil)
+			(setq speedbar-use-images nil)
+			(setq sr-speedbar-auto-refresh nil)
+			(setq sr-speedbar-max-width 100)
+			(setq sr-speedbar-width-console 50)
+			(setq sr-speedbar-width-x 50)
+			)
+	       )
+	(:name browse-kill-ring
+	       :after (browse-kill-ring-default-keybindings)
+	       )
+	(:name yaml-mode
+	       :after (progn
+			(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+			)
+	       )
+	;; (:name evil
+	;; 	   :after (progn
+	;; 				(require 'evil)
+	;; 				)
+	;; 	   )
+	)
+      )
+(setq my-packages
+      (append
+       '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
+		web-mode sr-speedbar json browse-kill-ring rainbow-mode
+		yaml-mode)
+       (mapcar 'el-get-source-name el-get-sources)))
+
+(el-get-cleanup my-packages)
+(el-get 'sync my-packages)
+
+;;-----------------------------------------------------------------------
+;; functions
+;;-----------------------------------------------------------------------
+
+(defun reload-dotemacs ()
+  "reload your .emacs file without restarting Emacs"
+  (interactive)
+  (load-file "~/.emacs") )
 
 ;; http://whattheemacsd.com/file-defuns.el-01.html
 (defun rename-file-and-buffer ()
@@ -36,133 +183,6 @@
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-;; start emacsserver
-(server-start)
-
-;; no menu bar
-(menu-bar-mode -1)
-
-;; Set up el-get
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
-
-;; local sources
-(setq el-get-sources
-      '((:name nxhtml
-			   :type github
-			   :pkgname "emacsmirror/nxhtml"
-			   :prepare (progn
-						  (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-						  ;; Workaround the annoying warnings:
-						  ;;    Warning (mumamo-per-buffer-local-vars):
-						  ;;    Already 'permanent-local t: buffer-file-name
-						  (when (and (>= emacs-major-version 24)
-									 (>= emacs-minor-version 2))
-							(eval-after-load "mumamo"
-							  '(setq mumamo-per-buffer-local-vars
-									 (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-						  ;; fix white background in mumamo modes
-						  (custom-set-faces
-						   '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-						   '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-						   '(mumamo-region ((t nil))))
-						  
-						  (setq mumamo-chunk-coloring 5)
-						  ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
-						  ) 
-			   )
-		(:name python-mode
-			   :after (progn
-						(setq tab-width 4)
-						(setq py-indent-offset 4))
-			   )
-		(:name js2-mode
-			   :after (progn
-						(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-						)
-			   )
-		(:name ag.el
-			   :type github
-			   :pkgname "Wilfred/ag.el"
-			   :after (progn
-						(setq ag-reuse-buffers 't)
-						(setq ag-highlight-search t))
-			   )
-		(:name web-mode
-			   :after (progn
-						(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-						(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
-						(setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
-						)
-			   )
-		(:name sr-speedbar
-			   :after (progn
-						(setq resize-mini-windows nil)
-						(setq speedbar-use-images nil)
-						(setq sr-speedbar-auto-refresh nil)
-						(setq sr-speedbar-max-width 100)
-						(setq sr-speedbar-width-console 50)
-						(setq sr-speedbar-width-x 50)
-						)
-			   )
-		(:name browse-kill-ring
-			   :after (browse-kill-ring-default-keybindings)
-			   )
-		(:name yaml-mode
-			   :after (progn
-						(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-						)
-			   )
-		(:name evil
-			   :after (progn
-						(require 'evil)
-						)
-			   )
-		)
-      )
-(setq my-packages
-      (append
-       '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
-				web-mode sr-speedbar json browse-kill-ring rainbow-mode
-				yaml-mode evil)
-       (mapcar 'el-get-source-name el-get-sources)))
-
-(el-get-cleanup my-packages)
-(el-get 'sync my-packages)
-
-;; color theme
-;; Should match terminal color theme,
-;; or at least add `export TERM=xterm-256color` to your bash_profile.
-(load-theme 'wombat t)
-
-;; linum-mode
-(global-linum-mode 0)
-(setq linum-format "%3d ")
-
-
-(unless window-system
-  ;; Enable mouse support
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] '(lambda ()
-                               (interactive)
-                               (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                               (interactive)
-                               (scroll-up 1)))
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t)
-  )
-
-(setq large-file-warning-threshold 5000000)
-
 ;; Use ido-find-file from ibuffer window
 (require 'ibuffer)
 (defun ibuffer-ido-find-file ()
@@ -175,42 +195,6 @@
                                 default-directory))))
      (ido-find-file-in-dir default-directory))))
 (define-key ibuffer-mode-map "\C-x\C-f" 'ibuffer-ido-find-file)
-
-;;-----------------------------------------------------------------------
-;; copy-paste
-;;-----------------------------------------------------------------------
-
-;; system copy paste
-(defun pt-pbpaste ()
-  "Paste data from pasteboard."
-  (interactive)
-  (shell-command-on-region
-   (point)
-   (if mark-active (mark) (point))
-   "pbpaste" nil t))
-
-(defun pt-pbcopy ()
-  "Copy region to pasteboard."
-  (interactive)
-  (print (mark))
-  (when mark-active
-    (shell-command-on-region
-     (point) (mark) "pbcopy")
-    (kill-buffer "*Shell Command Output*")))
-
-;; hide autosaves in temp directory
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-;; hide backup files
-(setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
-      backup-by-copying t    ; Don't delink hardlinks
-      version-control t      ; Use version numbers on backups
-      delete-old-versions t  ; Automatically delete excess backups
-      kept-new-versions 20   ; how many of the newest versions to keep
-      kept-old-versions 5    ; and how many of the old
-      )
 
 ;;-----------------------------------------------------------------------
 ;; movement
@@ -243,42 +227,6 @@
 (add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
 
 ;;-----------------------------------------------------------------------
-;; aquamacs
-;;-----------------------------------------------------------------------
-
-(when (featurep 'aquamacs)
-  (tool-bar-mode -1)
-  (tooltip-mode -1)
-  (global-linum-mode t)
-
-  ;; set global font
-  (set-default-font "-apple-Inconsolata-medium-normal-normal-*-17-*-*-*-m-0-iso10646-1")
-
-  ;; set color theme
-  (require 'color-theme)
-  (color-theme-initialize)
-  (color-theme-charcoal-black)
-  (set-face-background 'modeline "#FFEF94"))
-
-;;-----------------------------------------------------------------------
-;; appearance
-;;-----------------------------------------------------------------------
-
-(column-number-mode t)
-(line-number-mode t)
-
-;; line highlight color
-(global-hl-line-mode 0)
-
-;; highlight lines that are too long
-;; (require 'whitespace)
-;; (whitespace-mode nil)
-;; (defun whitespace-hook ()
-;;   (interactive)
-;;   (setq whitespace-style '(face lines-tail))
-;;   (whitespace-mode t))
-
-;;-----------------------------------------------------------------------
 ;; tramp
 ;;-----------------------------------------------------------------------
 
@@ -293,14 +241,6 @@
 ;; window switching
 ;;-----------------------------------------------------------------------
 
-;; windmove for fast window switching
-;; (when (fboundp 'windmove-default-keybindings)
-;;   (windmove-default-keybindings))
-;; (global-set-key (kbd "C-<left>")  'windmove-left)
-;; (global-set-key (kbd "C-<right>") 'windmove-right)
-;; (global-set-key (kbd "C-<up>")    'windmove-up)
-;; (global-set-key (kbd "C-<down>")  'windmove-down)
-
 (defun switch-to-minibuffer ()
   "Switch to minibuffer window."
   (interactive)
@@ -312,22 +252,8 @@
   (interactive)
   (select-window (next-window nil 'never-minibuf nil)))
 
-
-
 ;;-----------------------------------------------------------------------
-;; flymake
-;;-----------------------------------------------------------------------
-
-;;(require 'flymake)
-
-;;(defun flymake-get-tex-args (file-name) (list "pdflatex"
-;;    (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
-
-;;(add-hook 'LaTeX-mode-hook 'flymake-mode)
-;;(add-hook 'MATLAB-mode-hook 'flymake-mode)
-
-;;-----------------------------------------------------------------------
-;; TAB behavior
+;; tab behavior
 ;;-----------------------------------------------------------------------
 
 ;; pabbrev
@@ -373,28 +299,8 @@
 
 (fset 'pabbrev-suggestions-goto-buffer 'pabbrev-suggestions-ido)
 
-;; ;; in some modes, just expand
-;; (defun just-expand (arg)
-;;   (interactive "*P")
-;;   (dabbrev-expand arg))
-;; (defun my-tab-expand ()
-;;   (local-set-key [tab] 'just-expand))
-;; (add-hook 'comint-mode-hook 'my-tab-expand)
-;;
-;; OR
-;;
-;; (defun indent-or-expand (arg)
-;;   "Either indent according to mode, or expand the word preceding
-;; point."
-;;   (interactive "*P")
-;;   (if (and
-;;        (or (bobp) (= ?w (char-syntax (char-before))))
-;;        (or (eobp) (not (= ?w (char-syntax (char-after))))))
-;;       (dabbrev-expand arg)
-;;     (indent-according-to-mode)))
-
 ;;-----------------------------------------------------------------------
-;; TEXT management
+;; text management
 ;;-----------------------------------------------------------------------
 
 (defun indent-return-indent ()
@@ -454,12 +360,13 @@ This command does the inverse of `fill-region'."
   (if (not isearch-regexp)
       (isearch-toggle-regexp))
   (isearch-search-and-update))
+
 (defun isearch-yank-symbol ()
   "Put symbol at current point into search string."
   (interactive)
   (let ((sym (find-tag-default)))
     (if (null sym)
-		(message "No symbol at point")
+	(message "No symbol at point")
       (isearch-yank-regexp
        (concat "\\_<" (regexp-quote sym) "\\_>")))))
 (define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
@@ -475,29 +382,16 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 ;; matlab programming
 ;;-----------------------------------------------------------------------
-;; (setq load-path (cons (concat *personal-elisp* "matlab/") load-path))
+
 (autoload 'matlab-mode "matlab" "Enter Matlab Mode." t)
-;; (autoload 'matlab-shell "matlab" "Interactive Matlab Mode." t)
-;; (setq matlab-shell-command "matlab")
+
 (add-to-list 'auto-mode-alist '("\\.m\\'" . matlab-mode))
 
-;;  (autoload 'mlint-minor-mode "mlint" "\
-;; Toggle mlint minor mode, a mode for showing mlint errors.
-;; With prefix ARG, turn mlint minor mode on iff ARG is positive.
-;; \\{mlint-minor-mode-map\\}
-;; \(fn &optional ARG)" t nil)
-;; (defun mlint-hook ()
-;;    (mlint-minor-mode 1))
-;; (add-hook 'matlab-mode-hook 'mlint-hook)
-
-;; (setq matlab-shell-command-switches '("-nodesktop -nosplash")) ; -nojvm")
 (add-hook 'matlab-mode-hook
           (lambda ()
             (setq matlab-indent-level 4)
             (setq fill-column 80)
             (define-key matlab-mode-map "\M-;" 'comment-dwim)))
-;; (setq matlab-show-mlint-warnings nil)
-;; (setq mlint-programs '("/Applications/MATLAB_R2010b.app/bin/maci64/mlint"))
 
 ;;-----------------------------------------------------------------------
 ;; Latex programming
@@ -513,6 +407,7 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 ;; Markdown mode
 ;;-----------------------------------------------------------------------
+
 (require 'markdown-mode)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)) ;github-flavored markdown
 
@@ -538,11 +433,29 @@ This command does the inverse of `fill-region'."
 (setq org-startup-folded nil)
 
 ;;-----------------------------------------------------------------------
-;; git gutter
+;; Mac OS X
 ;;-----------------------------------------------------------------------
-;; (require 'git-gutter)
-;; (setq git-gutter:update-threshold nil)
-;; (setq git-gutter:update-hooks '(after-save-hook after-revert-hook))
+
+;; system copy paste
+(defun pt-pbpaste ()
+  "Paste data from pasteboard."
+  (interactive)
+  (shell-command-on-region
+   (point)
+   (if mark-active (mark) (point))
+   "pbpaste" nil t))
+
+(defun pt-pbcopy ()
+  "Copy region to pasteboard."
+  (interactive)
+  (print (mark))
+  (when mark-active
+    (shell-command-on-region
+     (point) (mark) "pbcopy")
+    (kill-buffer "*Shell Command Output*")))
+
+;; use M-x locate
+(setq locate-command "mdfind")
 
 ;;-----------------------------------------------------------------------
 ;; key bindings
