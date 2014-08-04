@@ -150,7 +150,7 @@
       (append
        '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
 		web-mode sr-speedbar json browse-kill-ring rainbow-mode
-		yaml-mode)
+		yaml-mode magit)
        (mapcar 'el-get-source-name el-get-sources)))
 
 (el-get-cleanup my-packages)
