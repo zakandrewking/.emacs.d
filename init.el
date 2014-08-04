@@ -105,6 +105,8 @@
 	(:name js2-mode
 	       :after (progn
 			(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+			;; don't use it for json files
+			(add-to-list 'auto-mode-alist '("\\.json\\'" . fundamental-mode))
 			)
 	       )
 	(:name ag.el
@@ -147,10 +149,9 @@
 	)
       )
 (setq my-packages
-      (append
-       '(el-get cedet matlab-mode nxhtml python-mode js2-mode ag.el html5
-		web-mode sr-speedbar json browse-kill-ring rainbow-mode
-		yaml-mode magit)
+      (append '(el-get matlab-mode nxhtml python-mode js2-mode
+       ag.el web-mode sr-speedbar json browse-kill-ring yaml-mode
+       magit)
        (mapcar 'el-get-source-name el-get-sources)))
 
 (el-get-cleanup my-packages)
