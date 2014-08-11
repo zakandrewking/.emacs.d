@@ -480,7 +480,6 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
-(define-key my-keys-minor-mode-map (kbd "C-c m") 'nxhtml-mumamo-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c w") 'visual-line-mode)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
@@ -488,6 +487,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'org-cycle)
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
+(define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
