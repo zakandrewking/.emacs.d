@@ -433,6 +433,12 @@ This command does the inverse of `fill-region'."
 
 (setq org-startup-folded nil)
 
+(defun my-org-right-and-heading ()
+  (interactive)
+  (org-insert-heading)
+  (org-metaright)
+  (org-ctrl-c-minus))
+
 ;;-----------------------------------------------------------------------
 ;; Mac OS X
 ;;-----------------------------------------------------------------------
@@ -487,6 +493,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'org-cycle)
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
+(define-key my-keys-minor-mode-map (kbd "M-j") 'org-insert-heading)
+(define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 
 (define-minor-mode my-keys-minor-mode
