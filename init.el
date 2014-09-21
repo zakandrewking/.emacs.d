@@ -495,6 +495,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
 (define-key my-keys-minor-mode-map (kbd "M-j") 'org-insert-heading)
 (define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
+(define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
+(define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 
 (define-minor-mode my-keys-minor-mode
