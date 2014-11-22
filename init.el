@@ -141,18 +141,25 @@
 			(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
 			)
 	       )
-	;; (:name evil
-	;; 	   :after (progn
-	;; 				(require 'evil)
-	;; 				)
-	;; 	   )
+	(:name evil
+	       :after (progn
+			(require 'evil)
+			(evil-mode-1)
+			)
+	       )
+	(:name key-chord
+	       :after (progn
+			(key-chord-mode 1)
+			)
+	       )
 	)
       )
+
 (setq my-packages
-      (append '(el-get matlab-mode nxhtml python-mode js2-mode
-       ag.el web-mode sr-speedbar json browse-kill-ring yaml-mode
-       magit)
-       (mapcar 'el-get-source-name el-get-sources)))
+      (append '(el-get nxhtml python-mode js2-mode
+		       ag.el web-mode sr-speedbar json browse-kill-ring yaml-mode
+		       evil key-chord magit)
+	      (mapcar 'el-get-source-name el-get-sources)))
 
 (el-get-cleanup my-packages)
 (el-get 'sync my-packages)
@@ -505,3 +512,5 @@ This command does the inverse of `fill-region'."
 (my-keys-minor-mode 1)
 
 (global-unset-key (kbd "C-z"))
+
+(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
