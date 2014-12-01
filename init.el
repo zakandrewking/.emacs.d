@@ -144,12 +144,14 @@
 	(:name evil
 	       :after (progn
 			(require 'evil)
-			(evil-mode-1)
+			(evil-mode 1)
+			(setq evil-want-fine-undo t)
 			)
 	       )
 	(:name key-chord
 	       :after (progn
 			(key-chord-mode 1)
+			(setq key-chord-two-keys-delay 0.2)
 			)
 	       )
 	)
@@ -285,6 +287,7 @@
 (add-hook 'org-mode-hook                'pabbrev-hook)
 (add-hook 'js-mode-hook                 'pabbrev-hook)
 (add-hook 'js2-mode-hook                'pabbrev-hook)
+(add-hook 'rst-mode-hook                'pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
@@ -386,6 +389,15 @@ This command does the inverse of `fill-region'."
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.pbs\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.ext\\'" . shell-script-mode))
+
+;;-----------------------------------------------------------------------
+;; javascript 
+;;-----------------------------------------------------------------------
+
+;; include underscores in the word definition (especially useful for evil-mode
+;; superstar)
+(add-hook 'js2-mode-hook
+          (lambda () (modify-syntax-entry ?_ "w")))
 
 ;;-----------------------------------------------------------------------
 ;; matlab programming
@@ -505,6 +517,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
 (define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
+;; (define-key my-keys-minor-mode-map (kdb "C-<space>") ' ;
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
@@ -514,3 +527,4 @@ This command does the inverse of `fill-region'."
 (global-unset-key (kbd "C-z"))
 
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(define-key evil-normal-state-map (kbd "C-]") (kbd "\\ M-."))
