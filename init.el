@@ -1,4 +1,31 @@
 ;;-----------------------------------------------------------------------
+;; Cygwin
+;;-----------------------------------------------------------------------
+
+(if (eq system-type 'cygwin)
+    (progn
+      (print "Cygwin startup")
+      (custom-set-variables
+       '(auto-save-default nil)
+       '(auto-save-interval 10000)
+       '(auto-save-timeout 3000)
+       '(deft-auto-save-interval 10000.0)
+       '(desktop-auto-save-timeout 3000)
+       '(magit-git-executable "/cygdrive/c/cygwin64/bin/git.exe"))
+      (custom-set-faces      
+       '(org-level-2 ((t (:inherit outline-2 :foreground "color-81"))))
+       '(org-level-3 ((t (:inherit outline-3 :foreground "color-137")))))
+      (setq auto-mode-alist '())
+      (add-to-list 'auto-mode-alist '("\\.rst\\'" . rst-mode))
+      (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+      (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+      (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+      (add-to-list 'auto-mode-alist '("\\.el\\'" . emacs-lisp-mode))
+      (setq exec-path (add-to-list 'exec-path "C:/Program Files (x86)/Git/bin"))
+      (setenv "PATH" (concat "C:\\Program Files (x86)\\Git\\bin;" (getenv "PATH"))))
+  (print "Not Cygwin"))
+
+;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
 
@@ -8,6 +35,7 @@
   (normal-top-level-add-subdirs-to-load-path))
 
 ;; variables
+(setq-default indent-tabs-mode nil)
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
 (setq clean-buffer-list-delay-general 0)
@@ -75,93 +103,92 @@
 ;; local sources
 (setq el-get-sources
       '((:name nxhtml
-	       :type github
-	       :pkgname "emacsmirror/nxhtml"
-	       :prepare (progn
-			  (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-			  ;; Workaround the annoying warnings:
-			  ;;    Warning (mumamo-per-buffer-local-vars):
-			  ;;    Already 'permanent-local t: buffer-file-name
-			  (when (and (>= emacs-major-version 24)
-				     (>= emacs-minor-version 2))
-			    (eval-after-load "mumamo"
-			      '(setq mumamo-per-buffer-local-vars
-				     (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-			  ;; fix white background in mumamo modes
-			  (custom-set-faces
-			   '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			   '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			   '(mumamo-region ((t nil))))
-			  
-			  (setq mumamo-chunk-coloring 5)
-			  ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
-			  ) 
-	       )
-	(:name python-mode
-	       :after (progn
-			(setq tab-width 4)
-			(setq py-indent-offset 4))
-	       )
-	(:name js2-mode
-	       :after (progn
-			(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-			;; don't use it for json files
-			(add-to-list 'auto-mode-alist '("\\.json\\'" . fundamental-mode))
-			)
-	       )
-	(:name ag.el
-	       :type github
-	       :pkgname "Wilfred/ag.el"
-	       :after (progn
-			(setq ag-reuse-buffers 't)
-			(setq ag-highlight-search t))
-	       )
-	(:name web-mode
-	       :after (progn
-			(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-			(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
-			(setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
-			)
-	       )
-	(:name sr-speedbar
-	       :after (progn
-			(setq resize-mini-windows nil)
-			(setq speedbar-use-images nil)
-			(setq sr-speedbar-auto-refresh nil)
-			(setq sr-speedbar-max-width 100)
-			(setq sr-speedbar-width-console 50)
-			(setq sr-speedbar-width-x 50)
-			)
-	       )
-	(:name browse-kill-ring
-	       :after (browse-kill-ring-default-keybindings)
-	       )
-	(:name yaml-mode
-	       :after (progn
-			(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-			)
-	       )
-	(:name evil
-	       :after (progn
-			(require 'evil)
-			(evil-mode 1)
-			(setq evil-want-fine-undo t)
-			)
-	       )
-	(:name key-chord
-	       :after (progn
-			(key-chord-mode 1)
-			(setq key-chord-two-keys-delay 0.2)
-			)
-	       )
-	)
+               :type github
+               :pkgname "emacsmirror/nxhtml"
+               :prepare (progn
+                          ;; (load "~/.emacs.d/el-get/nxhtml/autostart.el")
+                          ;; ;; Workaround the annoying warnings:
+                          ;; ;;    Warning (mumamo-per-buffer-local-vars):
+                          ;; ;;    Already 'permanent-local t: buffer-file-name
+                          ;; (when (and (>= emacs-major-version 24)
+                          ;;        (>= emacs-minor-version 2))
+                          ;;   (eval-after-load "mumamo"
+                          ;;     '(setq mumamo-per-buffer-local-vars
+                          ;;        (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
+                          ;; ;; fix white background in mumamo modes
+                          ;; (custom-set-faces
+                          ;;  '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+                          ;;  '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
+                          ;;  '(mumamo-region ((t nil))))
+                          
+                          ;; (setq mumamo-chunk-coloring 5)
+                          ;; ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
+                          ;; ) 
+                          ))
+        (:name python-mode
+               :after (progn
+                        (setq tab-width 4)
+                        (setq py-indent-offset 4))
+               )
+        (:name js2-mode
+               :after (progn
+                        (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+                        ;; don't use it for json files
+                        (add-to-list 'auto-mode-alist '("\\.json\\'" . fundamental-mode))
+                        )
+               )
+        (:name ag.el
+               :type github
+               :pkgname "Wilfred/ag.el"
+               :after (progn
+                        (setq ag-reuse-buffers 't)
+                        (setq ag-highlight-search t))
+               )
+        (:name web-mode
+               :after (progn
+                        (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+                        (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
+                        (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
+                        (add-to-list 'auto-mode-alist '("\\.css\\'" . css-mode))
+                        )
+               )
+        (:name sr-speedbar
+               :after (progn
+                        (setq resize-mini-windows nil)
+                        (setq speedbar-use-images nil)
+                        (setq sr-speedbar-auto-refresh nil)
+                        (setq sr-speedbar-max-width 100)
+                        (setq sr-speedbar-width-console 50)
+                        (setq sr-speedbar-width-x 50)
+                        )
+               )
+        (:name browse-kill-ring
+               :after (browse-kill-ring-default-keybindings)
+               )
+        (:name yaml-mode
+               :after (progn
+                        (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+                        )
+               )
+        (:name my-evil
+               :website "http://gitorious.org/evil/pages/Home"
+               :description "Evil is an extensible vi layer for Emacs. It
+       emulates the main features of Vim, and provides facilities
+       for writing custom extensions."
+               :type git
+               :url "git://gitorious.org/evil/evil.git")
+        (:name key-chord
+               :after (progn
+                        (key-chord-mode 1)
+                        )
+               )
+        )
       )
-
 (setq my-packages
-      (append '(el-get nxhtml python-mode js2-mode
-		       ag.el web-mode sr-speedbar json browse-kill-ring yaml-mode
-		       evil key-chord magit)
-	      (mapcar 'el-get-source-name el-get-sources)))
+      (append '(el-get python-mode js2-mode
+                       web-mode browse-kill-ring
+                       magit my-evil key-chord)
+              (mapcar 'el-get-source-name el-get-sources)))
 
 (el-get-cleanup my-packages)
 (el-get 'sync my-packages)
@@ -287,7 +314,6 @@
 (add-hook 'org-mode-hook                'pabbrev-hook)
 (add-hook 'js-mode-hook                 'pabbrev-hook)
 (add-hook 'js2-mode-hook                'pabbrev-hook)
-(add-hook 'rst-mode-hook                'pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
@@ -377,7 +403,7 @@ This command does the inverse of `fill-region'."
   (interactive)
   (let ((sym (find-tag-default)))
     (if (null sym)
-	(message "No symbol at point")
+        (message "No symbol at point")
       (isearch-yank-regexp
        (concat "\\_<" (regexp-quote sym) "\\_>")))))
 (define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
@@ -389,15 +415,6 @@ This command does the inverse of `fill-region'."
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.pbs\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.ext\\'" . shell-script-mode))
-
-;;-----------------------------------------------------------------------
-;; javascript 
-;;-----------------------------------------------------------------------
-
-;; include underscores in the word definition (especially useful for evil-mode
-;; superstar)
-(add-hook 'js2-mode-hook
-          (lambda () (modify-syntax-entry ?_ "w")))
 
 ;;-----------------------------------------------------------------------
 ;; matlab programming
@@ -436,7 +453,7 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 
 (require 'deft)
-(setq deft-directory "~/Dropbox (Personal)/PlainText/")
+(setq deft-directory "~/notes")
 (setq deft-extension "txt")
 (setq deft-text-mode 'org-mode)
 (setq deft-use-filename-as-title t)
@@ -514,10 +531,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
 (define-key my-keys-minor-mode-map (kbd "M-j") 'org-insert-heading)
 (define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
-(define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
-(define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
-;; (define-key my-keys-minor-mode-map (kdb "C-<space>") ' ;
+(define-key my-keys-minor-mode-map (kbd "<backtab>") 'indent-for-tab-command)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
@@ -526,5 +541,5 @@ This command does the inverse of `fill-region'."
 
 (global-unset-key (kbd "C-z"))
 
+;; evil-mode
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-(define-key evil-normal-state-map (kbd "C-]") (kbd "\\ M-."))
