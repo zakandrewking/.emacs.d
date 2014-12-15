@@ -458,6 +458,10 @@ This command does the inverse of `fill-region'."
   (org-metaright)
   (org-ctrl-c-minus))
 
+(custom-set-faces
+ '(org-level-2 ((t (:inherit outline-2 :foreground "color-81"))))
+ '(org-level-3 ((t (:inherit outline-3 :foreground "color-137")))))
+
 ;;-----------------------------------------------------------------------
 ;; Mac OS X
 ;;-----------------------------------------------------------------------
