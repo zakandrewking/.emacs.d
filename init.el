@@ -1,4 +1,87 @@
 ;;-----------------------------------------------------------------------
+;; packages
+;;-----------------------------------------------------------------------
+
+(when (>= emacs-major-version 24)
+  (require 'cl)
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (package-initialize)
+
+  (defvar required-packages '(evil magit deft key-chord js2-mode
+    browse-kill-ring yaml-mode ag powerline web-mode)
+    "a list of packages to ensure are installed at launch.")
+
+  ;; method to check if all packages are installed
+  (defun packages-installed-p ()
+    (loop for p in required-packages
+		  when (not (package-installed-p p)) do (return nil)
+		  finally (return t)))
+
+  ;; if not all packages are installed, check one by one and install the missing ones.
+  (unless (packages-installed-p)
+	;; check for new packages (package versions)
+    (message "%s" "Emacs is now refreshing its package database...")
+    (package-refresh-contents)
+    (message "%s" " done.")
+	;; install the missing packages
+    (dolist (p required-packages)
+      (when (not (package-installed-p p))
+		(package-install p))))
+  
+  ;; evil mode setup
+  (evil-mode 1)
+  (setq evil-want-fine-undo t)
+  (define-key evil-normal-state-map (kbd "C-]") (kbd "\\ M-."))
+  ;; key chord
+  (key-chord-mode 1)
+  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (setq key-chord-two-keys-delay 0.2)
+  
+  ;; powerline
+  (powerline-center-evil-theme)
+
+  ;; js2-mode setup
+  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  (add-to-list 'auto-mode-alist '("\\.json\\'" . javascript-mode))
+  ;; include underscores in the word definition (especially useful for evil-mode
+  ;; superstar)
+  (add-hook 'js2-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
+  
+  ;; python
+  (setq tab-width 4)
+  (setq py-indent-offset 4)
+
+  ;; web-mode
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
+  (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
+
+  ;; browse-kill-ring
+  (browse-kill-ring-default-keybindings)
+  
+  ;; yaml-mode
+  (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+
+  ;; deft-mode
+  (setq deft-directory "~/Dropbox (Personal)/PlainText/")
+  (setq deft-extension "txt")
+  (setq deft-text-mode 'org-mode)
+  (setq deft-use-filename-as-title t)
+  (put 'erase-buffer 'disabled nil)
+  (put 'toggle-mac-option-modifier 'disabled t)
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+
+  ;; sr-speedbar
+  ;; (setq resize-mini-windows nil)
+  ;; (setq speedbar-use-images nil)
+  ;; (setq sr-speedbar-auto-refresh nil)
+  ;; (setq sr-speedbar-max-width 100)
+  ;; (setq sr-speedbar-width-console 50)
+  ;; (setq sr-speedbar-width-x 50)
+  )
+
+;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
 
@@ -28,6 +111,7 @@
 ;; Should match terminal color theme,
 ;; or at least add `export TERM=xterm-256color` to your bash_profile.
 (load-theme 'wombat t)
+(display-time)
 
 ;; Enable mouse support
 (unless window-system
@@ -56,115 +140,6 @@
       kept-new-versions 20   ; how many of the newest versions to keep
       kept-old-versions 5    ; and how many of the old
       )
-
-;;-----------------------------------------------------------------------
-;; el-get
-;;-----------------------------------------------------------------------
-
-;; Set up el-get
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
-
-;; local sources
-(setq el-get-sources
-      '((:name nxhtml
-	       :type github
-	       :pkgname "emacsmirror/nxhtml"
-	       :prepare (progn
-			  (load "~/.emacs.d/el-get/nxhtml/autostart.el")
-			  ;; Workaround the annoying warnings:
-			  ;;    Warning (mumamo-per-buffer-local-vars):
-			  ;;    Already 'permanent-local t: buffer-file-name
-			  (when (and (>= emacs-major-version 24)
-				     (>= emacs-minor-version 2))
-			    (eval-after-load "mumamo"
-			      '(setq mumamo-per-buffer-local-vars
-				     (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-			  ;; fix white background in mumamo modes
-			  (custom-set-faces
-			   '(mumamo-border-face-in ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			   '(mumamo-border-face-out ((t (:inherit font-lock-preprocessor-face :underline t :weight bold))))
-			   '(mumamo-region ((t nil))))
-			  
-			  (setq mumamo-chunk-coloring 5)
-			  ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . nxhtml-mode))
-			  ) 
-	       )
-	(:name python-mode
-	       :after (progn
-			(setq tab-width 4)
-			(setq py-indent-offset 4))
-	       )
-	(:name js2-mode
-	       :after (progn
-			(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-			;; don't use it for json files
-			(add-to-list 'auto-mode-alist '("\\.json\\'" . fundamental-mode))
-			)
-	       )
-	(:name ag.el
-	       :type github
-	       :pkgname "Wilfred/ag.el"
-	       :after (progn
-			(setq ag-reuse-buffers 't)
-			(setq ag-highlight-search t))
-	       )
-	(:name web-mode
-	       :after (progn
-			(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-			(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
-			(setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
-			)
-	       )
-	(:name sr-speedbar
-	       :after (progn
-			(setq resize-mini-windows nil)
-			(setq speedbar-use-images nil)
-			(setq sr-speedbar-auto-refresh nil)
-			(setq sr-speedbar-max-width 100)
-			(setq sr-speedbar-width-console 50)
-			(setq sr-speedbar-width-x 50)
-			)
-	       )
-	(:name browse-kill-ring
-	       :after (browse-kill-ring-default-keybindings)
-	       )
-	(:name yaml-mode
-	       :after (progn
-			(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-			)
-	       )
-	(:name evil
-	       :after (progn
-			(require 'evil)
-			(evil-mode 1)
-			(setq evil-want-fine-undo t)
-			)
-	       )
-	(:name key-chord
-	       :after (progn
-			(key-chord-mode 1)
-			(setq key-chord-two-keys-delay 0.2)
-			)
-	       )
-	)
-      )
-
-(setq my-packages
-      (append '(el-get nxhtml python-mode js2-mode
-		       ag.el web-mode sr-speedbar json browse-kill-ring yaml-mode
-		       evil key-chord magit)
-	      (mapcar 'el-get-source-name el-get-sources)))
-
-(el-get-cleanup my-packages)
-(el-get 'sync my-packages)
 
 ;;-----------------------------------------------------------------------
 ;; functions
@@ -268,26 +243,17 @@
 
 ;; pabbrev
 (require 'pabbrev)
-
+(setq pabbrev-minimal-expansion-p 1)
 (defun pabbrev-get-previous-binding ()
   "override default"
   (nil))
 
-(defun pabbrev-hook ()
-  (pabbrev-mode 1)
-  (setq pabbrev-minimal-expansion-p 1))
-(add-hook 'c-mode-hook             'pabbrev-hook)
-(add-hook 'sh-mode-hook            'pabbrev-hook)
-(add-hook 'emacs-lisp-mode-hook    'pabbrev-hook)
-(add-hook 'latex-mode-hook         'pabbrev-hook)
-(add-hook 'matlab-mode-hook        'pabbrev-hook)
-(add-hook 'python-mode-hook        'pabbrev-hook)
-(add-hook 'nxhtml-mode-hook             'pabbrev-hook)
-(add-hook 'nxhtml-mumamo-mode-hook      'pabbrev-hook)
-(add-hook 'org-mode-hook                'pabbrev-hook)
-(add-hook 'js-mode-hook                 'pabbrev-hook)
-(add-hook 'js2-mode-hook                'pabbrev-hook)
-(add-hook 'rst-mode-hook                'pabbrev-hook)
+(global-pabbrev-mode 1)
+
+(defun no-pabbrev-hook ()
+  "Turn off pabbrev mode"
+  (pabbrev-mode 0))
+(add-hook 'js-mode-hook 'no-pabbrev-hook)
 
 (defun pabbrev-suggestions-ido (suggestion-list)
   "Use ido to display menu of all pabbrev suggestions."
@@ -391,15 +357,6 @@ This command does the inverse of `fill-region'."
 (add-to-list 'auto-mode-alist '("\\.ext\\'" . shell-script-mode))
 
 ;;-----------------------------------------------------------------------
-;; javascript 
-;;-----------------------------------------------------------------------
-
-;; include underscores in the word definition (especially useful for evil-mode
-;; superstar)
-(add-hook 'js2-mode-hook
-          (lambda () (modify-syntax-entry ?_ "w")))
-
-;;-----------------------------------------------------------------------
 ;; matlab programming
 ;;-----------------------------------------------------------------------
 
@@ -417,8 +374,7 @@ This command does the inverse of `fill-region'."
 ;; Latex programming
 ;;-----------------------------------------------------------------------
 
-(defun vlm-hook ()
-  (visual-line-mode 1))
+(defun vlm-hook () (visual-line-mode 1))
 (add-hook 'latex-mode-hook 'vlm-hook)
 
 ;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
@@ -429,19 +385,7 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 
 (require 'markdown-mode)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)) ;github-flavored markdown
-
-;;-----------------------------------------------------------------------
-;; Deft mode
-;;-----------------------------------------------------------------------
-
-(require 'deft)
-(setq deft-directory "~/Dropbox (Personal)/PlainText/")
-(setq deft-extension "txt")
-(setq deft-text-mode 'org-mode)
-(setq deft-use-filename-as-title t)
-(put 'erase-buffer 'disabled nil)
-(put 'toggle-mac-option-modifier 'disabled t)
+(add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)) ; github-flavored markdown
 
 ;;-----------------------------------------------------------------------
 ;; Org mode
@@ -522,13 +466,9 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 ;; (define-key my-keys-minor-mode-map (kdb "C-<space>") ' ;
+(define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
 
 (define-minor-mode my-keys-minor-mode
-  "A minor mode so that my key settings override annoying major modes."
-  t " my-keys" 'my-keys-minor-mode-map)
+  "A minor mode so that my key settings override annoying major
+  modes." t " my-keys" 'my-keys-minor-mode-map)
 (my-keys-minor-mode 1)
-
-(global-unset-key (kbd "C-z"))
-
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-(define-key evil-normal-state-map (kbd "C-]") (kbd "\\ M-."))
