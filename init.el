@@ -9,7 +9,7 @@
   (package-initialize)
 
   (defvar required-packages '(evil magit deft key-chord js2-mode
-    browse-kill-ring yaml-mode ag powerline web-mode)
+    browse-kill-ring yaml-mode ag smart-mode-line web-mode)
     "a list of packages to ensure are installed at launch.")
 
   ;; method to check if all packages are installed
@@ -33,13 +33,14 @@
   (evil-mode 1)
   (setq evil-want-fine-undo t)
   (define-key evil-normal-state-map (kbd "C-]") (kbd "\\ M-."))
-  ;; key chord
+  ; key chord
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   (setq key-chord-two-keys-delay 0.2)
   
-  ;; powerline
-  (powerline-center-evil-theme)
+  ;; smart-mode-line
+  (sml/setup)
+  (sml/apply-theme 'respectful)
 
   ;; js2-mode setup
   (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
