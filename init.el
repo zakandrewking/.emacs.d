@@ -39,6 +39,7 @@
   (setq key-chord-two-keys-delay 0.2)
   
   ;; smart-mode-line
+  (setq sml/no-confirm-load-theme t)
   (sml/setup)
   (sml/apply-theme 'respectful)
 
@@ -112,6 +113,11 @@
 ;; Should match terminal color theme,
 ;; or at least add `export TERM=xterm-256color` to your bash_profile.
 (load-theme 'wombat t)
+
+;; date and time
+(custom-set-variables
+ '(display-time-day-and-date t)
+ '(display-time-default-load-average nil))
 (display-time)
 
 ;; Enable mouse support
