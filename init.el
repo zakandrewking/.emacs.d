@@ -32,8 +32,13 @@
   ;; evil mode setup
   (evil-mode 1)
   (setq evil-want-fine-undo t)
-  (define-key evil-normal-state-map (kbd "C-]") (kbd "\\ M-."))
-  ; key chord
+  ;; find tags
+  (defun my-jump-to-tag ()
+    (interactive)
+    (evil-execute-in-emacs-state)
+    (call-interactively (key-binding (kbd "M-."))))
+  (define-key evil-normal-state-map (kbd "C-]") 'my-jump-to-tag)
+  ;; key chord
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   (setq key-chord-two-keys-delay 0.2)
@@ -53,6 +58,7 @@
   ;; python
   (setq tab-width 4)
   (setq py-indent-offset 4)
+  (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
 
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
@@ -147,6 +153,20 @@
       kept-new-versions 20   ; how many of the newest versions to keep
       kept-old-versions 5    ; and how many of the old
       )
+
+;; color shell command outputs
+;; 
+;; e.g. in dired mode, call ! on a file, give `jq -C '.'`, and see a colorful
+;; output
+;; (require 'ansi-color)
+
+;; (defadvice display-message-or-buffer (before ansi-color activate)
+;;   "Process ANSI color codes in shell output."
+;;   (let ((buf (ad-get-arg 0)))
+;;     (and (bufferp buf)
+;;          (string= (buffer-name buf) "*Shell Command Output*")
+;;          (with-current-buffer buf
+;;            (ansi-color-apply-on-region (point-min) (point-max))))))
 
 ;;-----------------------------------------------------------------------
 ;; functions
@@ -392,7 +412,7 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 
 (require 'markdown-mode)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode)) ; github-flavored markdown
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)) ; markdown
 
 ;;-----------------------------------------------------------------------
 ;; Org mode
