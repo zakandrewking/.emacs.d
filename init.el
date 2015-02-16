@@ -9,7 +9,8 @@
   (package-initialize)
 
   (defvar required-packages '(evil magit deft key-chord js2-mode
-    browse-kill-ring yaml-mode ag smart-mode-line web-mode)
+    browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
+    evil-surround)
     "a list of packages to ensure are installed at launch.")
 
   ;; method to check if all packages are installed
