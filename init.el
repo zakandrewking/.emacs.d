@@ -47,6 +47,9 @@
   ;; key chord
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-emacs-state-map "jk" 'evil-normal-state)
+  (key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
   (setq key-chord-two-keys-delay 0.2)
   ;; surround
   (global-evil-surround-mode 1)
