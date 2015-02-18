@@ -5,12 +5,14 @@
 (when (>= emacs-major-version 24)
   (require 'cl)
   (require 'package)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives
+	       '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (package-initialize)
 
   (defvar required-packages '(evil magit deft key-chord js2-mode
     browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
-    ess evil-surround)
+    ess evil-surround deft pabbrev markdown-mode auto-complete
+    yasnippet)
     "a list of packages to ensure are installed at launch.")
 
   ;; method to check if all packages are installed
@@ -19,7 +21,8 @@
 		  when (not (package-installed-p p)) do (return nil)
 		  finally (return t)))
 
-  ;; if not all packages are installed, check one by one and install the missing ones.
+  ;; if not all packages are installed, check one by one and install the missing
+  ;; ones.
   (unless (packages-installed-p)
 	;; check for new packages (package versions)
     (message "%s" "Emacs is now refreshing its package database...")
@@ -84,6 +87,14 @@
   ;; yaml-mode
   (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
 
+  ;; sr-speedbar
+  ;; (setq resize-mini-windows nil)
+  ;; (setq speedbar-use-images nil)
+  ;; (setq sr-speedbar-auto-refresh nil)
+  ;; (setq sr-speedbar-max-width 100)
+  ;; (setq sr-speedbar-width-console 50)
+  ;; (setq sr-speedbar-width-x 50)
+
   ;; deft-mode
   (setq deft-directory "~/Dropbox (Personal)/PlainText/")
   (setq deft-extension "txt")
@@ -93,23 +104,52 @@
   (put 'toggle-mac-option-modifier 'disabled t)
   (add-hook 'org-mode-hook 'auto-fill-mode)
 
-  ;; sr-speedbar
-  ;; (setq resize-mini-windows nil)
-  ;; (setq speedbar-use-images nil)
-  ;; (setq sr-speedbar-auto-refresh nil)
-  ;; (setq sr-speedbar-max-width 100)
-  ;; (setq sr-speedbar-width-console 50)
-  ;; (setq sr-speedbar-width-x 50)
+  ;; pabbrev
+  ;; (global-pabbrev-mode 1)
+  ;; (add-hook 'js-mode-hook 'no-pabbrev-hook)
+  (setq pabbrev-minimal-expansion-p 1)
+  (defun pabbrev-get-previous-binding ()
+    "override default"
+    (nil))
+  (defun no-pabbrev-hook ()
+    "Turn off pabbrev mode"
+    (pabbrev-mode 0))
+  (defun pabbrev-suggestions-ido (suggestion-list)
+    "Use ido to display menu of all pabbrev suggestions."
+    (when suggestion-list
+      (pabbrev-suggestions-insert-word pabbrev-expand-previous-word)
+      (pabbrev-suggestions-insert-word
+       (ido-completing-read "Completions: " (mapcar 'car suggestion-list)))))
+  (defun pabbrev-suggestions-insert-word (word)
+    "Insert word in place of current suggestion, with no attempt to kill pabbrev-buffer."
+    (let ((point))
+      (save-excursion
+  	(let ((bounds (pabbrev-bounds-of-thing-at-point)))
+  	  (progn
+  	    (delete-region (car bounds) (cdr bounds))
+  	    (insert word)
+  	    (setq point (point)))))
+      (if point
+  	  (goto-char point))))
+  (fset 'pabbrev-suggestions-goto-buffer 'pabbrev-suggestions-ido)
+
+  ;; markdown
+  (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  
+  ;; auto-complete
+  (global-auto-complete-mode 1)
+  (add-to-list 'ac-modes 'latex-mode)
+  
+  ;; helm
+  ;; (helm-mode 1)
+  
+  ;; yasnippet
+  (yas-global-mode 1)
   )
 
 ;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
-
-;; set default directory
-(let ((default-directory "~/.emacs.d/lisp/"))
-  (normal-top-level-add-to-load-path '("."))
-  (normal-top-level-add-subdirs-to-load-path))
 
 ;; variables
 (put 'upcase-region 'disabled nil)
@@ -278,45 +318,6 @@
   (select-window (next-window nil 'never-minibuf nil)))
 
 ;;-----------------------------------------------------------------------
-;; tab behavior
-;;-----------------------------------------------------------------------
-
-;; pabbrev
-(require 'pabbrev)
-(setq pabbrev-minimal-expansion-p 1)
-(defun pabbrev-get-previous-binding ()
-  "override default"
-  (nil))
-
-(global-pabbrev-mode 1)
-
-(defun no-pabbrev-hook ()
-  "Turn off pabbrev mode"
-  (pabbrev-mode 0))
-(add-hook 'js-mode-hook 'no-pabbrev-hook)
-
-(defun pabbrev-suggestions-ido (suggestion-list)
-  "Use ido to display menu of all pabbrev suggestions."
-  (when suggestion-list
-    (pabbrev-suggestions-insert-word pabbrev-expand-previous-word)
-    (pabbrev-suggestions-insert-word
-     (ido-completing-read "Completions: " (mapcar 'car suggestion-list)))))
-
-(defun pabbrev-suggestions-insert-word (word)
-  "Insert word in place of current suggestion, with no attempt to kill pabbrev-buffer."
-  (let ((point))
-    (save-excursion
-      (let ((bounds (pabbrev-bounds-of-thing-at-point)))
-        (progn
-          (delete-region (car bounds) (cdr bounds))
-          (insert word)
-          (setq point (point)))))
-    (if point
-        (goto-char point))))
-
-(fset 'pabbrev-suggestions-goto-buffer 'pabbrev-suggestions-ido)
-
-;;-----------------------------------------------------------------------
 ;; text management
 ;;-----------------------------------------------------------------------
 
@@ -414,18 +415,11 @@ This command does the inverse of `fill-region'."
 ;; Latex programming
 ;;-----------------------------------------------------------------------
 
-(defun vlm-hook () (visual-line-mode 1))
-(add-hook 'latex-mode-hook 'vlm-hook)
+(require 'tex)
+(add-hook 'LaTeX-mode-hook (lambda () (visual-line-mode 1)))
 
 ;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; (add-hook 'latex-mode-hook 'flyspell-mode)
-
-;;-----------------------------------------------------------------------
-;; Markdown mode
-;;-----------------------------------------------------------------------
-
-(require 'markdown-mode)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode)) ; markdown
 
 ;;-----------------------------------------------------------------------
 ;; Org mode
@@ -481,23 +475,24 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c q") 'auto-fill-mode)
 ;; (define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line) ;; C-u: universal-argument
 (define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
-(define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
-(define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
-(define-key my-keys-minor-mode-map (kbd "M-<down>") 'forward-paragraph)
+;; (define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
+;; (define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
+;; (define-key my-keys-minor-mode-map (kbd "M-<down>") 'forward-paragraph)
 (define-key my-keys-minor-mode-map "\C-xo" 'my-other-window)
 (define-key my-keys-minor-mode-map "\C-co" 'switch-to-minibuffer)
 (define-key my-keys-minor-mode-map "\C-x\ \C-k" 'kill-buffer)
-(define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
+;; (define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
 ;; (define-key my-keys-minor-mode-map (kbd "C-c g") 'git-gutter:toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'linum-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
+(define-key my-keys-minor-mode-map (kbd "C-c a") 'auto-complete-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
 (define-key my-keys-minor-mode-map (kbd "C-c w") 'visual-line-mode)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
 (define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
-(define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
+;; (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'org-cycle)
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
 (define-key my-keys-minor-mode-map (kbd "M-j") 'org-insert-heading)

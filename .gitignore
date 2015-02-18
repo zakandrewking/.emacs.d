@@ -7,4 +7,5 @@ srecode-map.el
 tramp
 backup
 auto-save-list
-/elpa/
+elpa/
+ac-comphist.dat
