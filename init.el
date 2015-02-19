@@ -10,9 +10,8 @@
   (package-initialize)
 
   (defvar required-packages '(evil magit deft key-chord js2-mode
-    browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
-    ess evil-surround deft pabbrev markdown-mode auto-complete
-    yasnippet)
+    browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex ess
+    evil-surround deft markdown-mode auto-complete yasnippet)
     "a list of packages to ensure are installed at launch.")
 
   ;; method to check if all packages are installed
@@ -104,46 +103,30 @@
   (put 'toggle-mac-option-modifier 'disabled t)
   (add-hook 'org-mode-hook 'auto-fill-mode)
 
-  ;; pabbrev
-  ;; (global-pabbrev-mode 1)
-  ;; (add-hook 'js-mode-hook 'no-pabbrev-hook)
-  (setq pabbrev-minimal-expansion-p 1)
-  (defun pabbrev-get-previous-binding ()
-    "override default"
-    (nil))
-  (defun no-pabbrev-hook ()
-    "Turn off pabbrev mode"
-    (pabbrev-mode 0))
-  (defun pabbrev-suggestions-ido (suggestion-list)
-    "Use ido to display menu of all pabbrev suggestions."
-    (when suggestion-list
-      (pabbrev-suggestions-insert-word pabbrev-expand-previous-word)
-      (pabbrev-suggestions-insert-word
-       (ido-completing-read "Completions: " (mapcar 'car suggestion-list)))))
-  (defun pabbrev-suggestions-insert-word (word)
-    "Insert word in place of current suggestion, with no attempt to kill pabbrev-buffer."
-    (let ((point))
-      (save-excursion
-  	(let ((bounds (pabbrev-bounds-of-thing-at-point)))
-  	  (progn
-  	    (delete-region (car bounds) (cdr bounds))
-  	    (insert word)
-  	    (setq point (point)))))
-      (if point
-  	  (goto-char point))))
-  (fset 'pabbrev-suggestions-goto-buffer 'pabbrev-suggestions-ido)
-
   ;; markdown
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
   
   ;; auto-complete
   (global-auto-complete-mode 1)
+  ;; modes to activate ac-mode
   (add-to-list 'ac-modes 'latex-mode)
+  (add-to-list 'ac-modes 'lisp-mode)
+  (add-to-list 'ac-modes 'python-mode)
+  (add-to-list 'ac-modes 'matlab-mode)
+  (add-to-list 'ac-modes 'shell-script-mode)
+  (add-to-list 'ac-modes 'js2-mode)
+  (add-to-list 'ac-modes 'markdown-mode)
+  (add-to-list 'ac-modes 'haskell-mode)
+  ;; C-n C-p for next/previous expansion
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous)
-  
-  ;; helm
-  ;; (helm-mode 1)
+  ;; don't choose next candidate with tab
+  (define-key ac-complete-mode-map (kbd "TAB") 'ac-expand-common)
+  ;; show immediately, with fewer options and only after 4 chars
+  (Setq ac-auto-show-menu 0.0)
+  (setq ac-delay 0.0)
+  (setq ac-auto-start 4)
+  (setq ac-candidate-limit 5)
   
   ;; yasnippet
   (yas-global-mode 1)
@@ -502,7 +485,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
 (define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
-;; (define-key my-keys-minor-mode-map (kdb "C-<space>") ' ;
+;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
 
 (define-minor-mode my-keys-minor-mode
