@@ -139,6 +139,8 @@
   ;; auto-complete
   (global-auto-complete-mode 1)
   (add-to-list 'ac-modes 'latex-mode)
+  (define-key ac-completing-map (kbd "C-n") 'ac-next)
+  (define-key ac-completing-map (kbd "C-p") 'ac-previous)
   
   ;; helm
   ;; (helm-mode 1)
