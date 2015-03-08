@@ -10,8 +10,9 @@
   (package-initialize)
 
   (defvar required-packages '(evil magit deft key-chord js2-mode
-    browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex ess
-    evil-surround deft markdown-mode auto-complete yasnippet)
+    browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
+    ess evil-surround deft markdown-mode auto-complete yasnippet
+    sql-indent multi-term)
     "a list of packages to ensure are installed at launch.")
 
   ;; method to check if all packages are installed
@@ -57,6 +58,25 @@
   (global-evil-surround-mode 1)
   ;; save with :W
   (evil-ex-define-cmd "W" 'save-buffer)
+  ;; always go to emacs mode in ansi-term char-mode
+  (defun evil-term-char-mode ()
+    "enter term-char-mode and evil-emacs-state"
+    (interactive)
+    (term-char-mode)
+    (evil-emacs-state))
+  (defun evil-term-line-mode ()
+    "enter term-line-mode and evil-emacs-state"
+    (interactive)
+    (term-line-mode)
+    (evil-normal-state))
+  (add-hook 'term-mode-hook
+	    (lambda ()
+	      (define-key term-mode-map (kbd "C-c C-k")
+		'evil-term-char-mode)))
+  (add-hook 'term-mode-hook
+	    (lambda ()
+	      (define-key term-raw-map (kbd "C-c C-j")
+		'evil-term-line-mode)))
   
   ;; smart-mode-line
   (setq sml/no-confirm-load-theme t)
@@ -123,13 +143,20 @@
   ;; don't choose next candidate with tab
   (define-key ac-complete-mode-map (kbd "TAB") 'ac-expand-common)
   ;; show immediately, with fewer options and only after 4 chars
-  (Setq ac-auto-show-menu 0.0)
+  (setq ac-auto-show-menu 0.0)
   (setq ac-delay 0.0)
   (setq ac-auto-start 4)
   (setq ac-candidate-limit 5)
   
   ;; yasnippet
   (yas-global-mode 1)
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand) ; shift-tab
+
+  ;; sql-indent
+  (eval-after-load "sql"
+    (load-library "sql-indent")) 
   )
 
 ;;-----------------------------------------------------------------------
