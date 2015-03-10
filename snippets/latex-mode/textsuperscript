@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: textsuperscript
+# key: sup
+# --
+\textsuperscript{$0}

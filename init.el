@@ -128,6 +128,27 @@
   
   ;; auto-complete
   (global-auto-complete-mode 1)
+  ;; sources and faces
+  (defun ac-yasnippet-candidates ()
+    (if (null ac-prefix)
+	(yas-active-keys)
+	(all-completions ac-prefix (yas-active-keys))))
+  (ac-define-source yasnippet
+    '((depends yasnippet)
+      (candidates . ac-yasnippet-candidates)
+      (action . yas/expand)
+      (requires . 1)
+      (limit . 5)
+      (symbol . "a")))
+  (ac-define-source my-words-in-same-mode-buffers
+    '((init . ac-update-word-index)
+      (candidates . (ac-word-candidates
+		     (lambda (buffer)
+		       (derived-mode-p (buffer-local-value 'major-mode buffer)))))
+      (requires . 4)
+      (limit . 5)))
+  (setq-default ac-sources '(ac-source-yasnippet
+			     ac-source-my-words-in-same-mode-buffers))
   ;; modes to activate ac-mode
   (add-to-list 'ac-modes 'latex-mode)
   (add-to-list 'ac-modes 'lisp-mode)
@@ -145,8 +166,9 @@
   ;; show immediately, with fewer options and only after 4 chars
   (setq ac-auto-show-menu 0.0)
   (setq ac-delay 0.0)
-  (setq ac-auto-start 4)
-  (setq ac-candidate-limit 5)
+  (setq ac-candidate-menu-min 0)
+  ;; (setq ac-auto-start 4) ;; redundant
+  ;; (setq ac-candidate-limit 5)
   
   ;; yasnippet
   (yas-global-mode 1)
@@ -429,6 +451,14 @@ This command does the inverse of `fill-region'."
 
 (require 'tex)
 (add-hook 'LaTeX-mode-hook (lambda () (visual-line-mode 1)))
+
+(defun use-default-paragraph-delimiters ()
+  (setq paragraph-start (default-value 'paragraph-start)
+        paragraph-separate (default-value 'paragraph-separate)))
+(add-hook 'LaTeX-mode-hook 'use-default-paragraph-delimiters)
+
+;; save automatically
+(setq TeX-save-query nil)
 
 ;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; (add-hook 'latex-mode-hook 'flyspell-mode)

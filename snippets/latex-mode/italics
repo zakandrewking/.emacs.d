@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: italics
+# key: i
+# --
+{\it $0}
