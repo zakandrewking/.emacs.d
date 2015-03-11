@@ -2,4 +2,4 @@
 # name: bold
 # key: b
 # --
-{\bf $0}
+{\bf $1} $0
