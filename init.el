@@ -9,11 +9,12 @@
 	       '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (package-initialize)
 
-  (defvar required-packages '(evil magit deft key-chord js2-mode
-    browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
-    ess evil-surround deft markdown-mode auto-complete yasnippet
-    sql-indent multi-term)
+  (defvar required-packages ()
     "a list of packages to ensure are installed at launch.")
+  (setq required-packages '(evil magit deft key-chord js2-mode
+  browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
+  ess evil-surround deft markdown-mode auto-complete yasnippet
+  sql-indent multi-term))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -145,7 +146,7 @@
       (candidates . (ac-word-candidates
 		     (lambda (buffer)
 		       (derived-mode-p (buffer-local-value 'major-mode buffer)))))
-      (requires . 4)
+      (requires . 3)
       (limit . 5)))
   (setq-default ac-sources '(ac-source-yasnippet
 			     ac-source-my-words-in-same-mode-buffers))
@@ -169,6 +170,8 @@
   (setq ac-candidate-menu-min 0)
   ;; (setq ac-auto-start 4) ;; redundant
   ;; (setq ac-candidate-limit 5)
+  ;; enable ac even in strings, comments, and docs
+  (setq ac-disable-faces nil)
   
   ;; yasnippet
   (yas-global-mode 1)
@@ -198,6 +201,8 @@
 (column-number-mode t)
 (line-number-mode t)
 (global-hl-line-mode 0) ; line highlight color
+(setq recentf-save-file "~/.emacs.d/recentf")
+(setq indent-tabs-mode nil)
 
 ;; start emacsserver
 (server-start)
@@ -294,6 +299,18 @@
                                 default-directory))))
      (ido-find-file-in-dir default-directory))))
 (define-key ibuffer-mode-map "\C-x\C-f" 'ibuffer-ido-find-file)
+
+;; recent files
+(require 'recentf)
+(recentf-mode t)
+(setq recentf-max-saved-items 150)
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      ()
+    (message "Aborting")))
+;; TODO make magic commands to enter recentf from ido buffer and find-file
 
 ;;-----------------------------------------------------------------------
 ;; movement
@@ -472,6 +489,9 @@ This command does the inverse of `fill-region'."
 
 (setq org-startup-folded nil)
 
+;; refile to beginning of groups
+(setq org-reverse-note-order t)
+
 (defun my-org-right-and-heading ()
   (interactive)
   (org-insert-heading)
@@ -516,7 +536,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c d") 'deft)
 (define-key my-keys-minor-mode-map (kbd "C-c q") 'auto-fill-mode)
 ;; (define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line) ;; C-u: universal-argument
-(define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
+;; (define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
+(define-key my-keys-minor-mode-map "\C-x\ \C-r" 'ido-recentf-open) 
 ;; (define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
 ;; (define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
 ;; (define-key my-keys-minor-mode-map (kbd "M-<down>") 'forward-paragraph)
