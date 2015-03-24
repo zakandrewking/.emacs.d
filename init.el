@@ -14,7 +14,7 @@
   (setq required-packages '(evil magit deft key-chord js2-mode
   browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
   ess evil-surround deft markdown-mode auto-complete yasnippet
-  sql-indent multi-term))
+  sql-indent multi-term json-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -182,6 +182,9 @@
   ;; sql-indent
   (eval-after-load "sql"
     (load-library "sql-indent")) 
+
+  ;; json-mode
+  (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
   )
 
 ;;-----------------------------------------------------------------------
