@@ -2,6 +2,6 @@
 # name: enumerate
 # key: en
 # --
-\begin{enumerate}
+\begin{enumerate}${1:[<+(1)->]}
 \item $0
 \end{enumerate}

@@ -159,6 +159,7 @@
   (add-to-list 'ac-modes 'js2-mode)
   (add-to-list 'ac-modes 'markdown-mode)
   (add-to-list 'ac-modes 'haskell-mode)
+  (add-to-list 'ac-modes 'org-mode)
   ;; C-n C-p for next/previous expansion
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous)
@@ -248,6 +249,10 @@
       kept-new-versions 20   ; how many of the newest versions to keep
       kept-old-versions 5    ; and how many of the old
       )
+
+;; remake the scratch buffer
+;; http://stackoverflow.com/questions/234963/re-open-scratch-buffer-in-emacs
+(run-with-idle-timer 60 t '(lambda () (get-buffer-create "*scratch*")))
 
 ;; color shell command outputs
 ;; 
@@ -385,17 +390,17 @@
 ;; text management
 ;;-----------------------------------------------------------------------
 
-(defun indent-return-indent ()
-  "indent current line, then return, and intent next line"
-  (interactive)
-  (indent-for-tab-command)
-  (newline-and-indent))
+;; (defun indent-return-indent ()
+;;   "indent current line, then return, and intent next line"
+;;   (interactive)
+;;   (indent-for-tab-command)
+;;   (newline-and-indent))
 
-(defun indent-return-comment-indent ()
-  "indent current line, then return new comment line, and intent"
-  (interactive)
-  (indent-for-tab-command)
-  (indent-new-comment-line))
+;; (defun indent-return-comment-indent ()
+;;   "indent current line, then return new comment line, and intent"
+;;   (interactive)
+;;   (indent-for-tab-command)
+;;   (indent-new-comment-line))
 
 (defun iwb ()
   "indent whole buffer"
@@ -566,8 +571,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
 (define-key my-keys-minor-mode-map (kbd "C-c w") 'visual-line-mode)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
-(define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
-(define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
+;; (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
+;; (define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
 ;; (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
 (define-key my-keys-minor-mode-map (kbd "C-c 9") 'org-cycle)
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)

@@ -2,6 +2,6 @@
 # name: itemize
 # key: it
 # --
-\begin{itemize}
+\begin{itemize}${1:[<+(1)->]}
 \item $0
 \end{itemize}
