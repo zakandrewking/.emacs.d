@@ -48,6 +48,15 @@
     (interactive)
     (insert (read-char)))
   (define-key evil-normal-state-map (kbd "SPC") 'enter-one-character)
+  ;; enter, S-enter to create a new line
+  (defun enter-one-line-below ()
+    (interactive)
+    (evil-insert-newline-below))
+  (define-key evil-normal-state-map (kbd "C-j") 'enter-one-line-below)
+  (defun enter-one-line-above ()
+    (interactive)
+    (evil-insert-newline-above))
+  (define-key evil-normal-state-map (kbd "C-k") 'enter-one-line-above)
   ;; key chord
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
