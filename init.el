@@ -35,59 +35,8 @@
 		(package-install p))))
   
   ;; evil mode setup
-  (evil-mode 1)
-  (setq evil-want-fine-undo t)
-  ;; find tags
-  (defun my-jump-to-tag ()
-    (interactive)
-    (evil-execute-in-emacs-state)
-    (call-interactively (key-binding (kbd "M-."))))
-  (define-key evil-normal-state-map (kbd "C-]") 'my-jump-to-tag)
-  ;; space to enter one character
-  (defun enter-one-character ()
-    (interactive)
-    (insert (read-char)))
-  (define-key evil-normal-state-map (kbd "SPC") 'enter-one-character)
-  ;; enter, S-enter to create a new line
-  (defun enter-one-line-below ()
-    (interactive)
-    (evil-insert-newline-below))
-  (define-key evil-normal-state-map (kbd "C-j") 'enter-one-line-below)
-  (defun enter-one-line-above ()
-    (interactive)
-    (evil-insert-newline-above))
-  (define-key evil-normal-state-map (kbd "C-k") 'enter-one-line-above)
-  ;; key chord
-  (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-emacs-state-map "jk" 'evil-normal-state)
-  (key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
-  (setq key-chord-two-keys-delay 0.2)
-  ;; surround
-  (global-evil-surround-mode 1)
-  ;; save with :W
-  (evil-ex-define-cmd "W" 'save-buffer)
-  ;; always go to emacs mode in ansi-term char-mode
-  (defun evil-term-char-mode ()
-    "enter term-char-mode and evil-emacs-state"
-    (interactive)
-    (term-char-mode)
-    (evil-emacs-state))
-  (defun evil-term-line-mode ()
-    "enter term-line-mode and evil-emacs-state"
-    (interactive)
-    (term-line-mode)
-    (evil-normal-state))
-  (add-hook 'term-mode-hook
-	    (lambda ()
-	      (define-key term-mode-map (kbd "C-c C-k")
-		'evil-term-char-mode)))
-  (add-hook 'term-mode-hook
-	    (lambda ()
-	      (define-key term-raw-map (kbd "C-c C-j")
-		'evil-term-line-mode)))
-  
+  (load "~/.emacs.d/evil-setup.el") 
+
   ;; smart-mode-line
   (setq sml/no-confirm-load-theme t)
   (sml/setup)
@@ -589,6 +538,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
 (define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
 (define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
+(define-key my-keys-minor-mode-map (kbd "C-c x") 'org-toggle-checkbox)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 ;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
