@@ -11,3 +11,5 @@ elpa/
 ac-comphist.dat
 bookmarks
 recentf
+*.desktop
+*.desktop.lock

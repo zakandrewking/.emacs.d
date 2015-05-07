@@ -6,33 +6,33 @@
   (require 'cl)
   (require 'package)
   (add-to-list 'package-archives
-	       '("melpa" . "http://melpa.milkbox.net/packages/") t)
+							 '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (package-initialize)
 
   (defvar required-packages ()
     "a list of packages to ensure are installed at launch.")
   (setq required-packages '(evil magit deft key-chord js2-mode
-  browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
-  ess evil-surround deft markdown-mode auto-complete yasnippet
-  sql-indent multi-term json-mode))
+																 browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
+																 ess evil-surround deft markdown-mode auto-complete yasnippet
+																 sql-indent multi-term json-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
     (loop for p in required-packages
-		  when (not (package-installed-p p)) do (return nil)
-		  finally (return t)))
+					when (not (package-installed-p p)) do (return nil)
+					finally (return t)))
 
   ;; if not all packages are installed, check one by one and install the missing
   ;; ones.
   (unless (packages-installed-p)
-	;; check for new packages (package versions)
+		;; check for new packages (package versions)
     (message "%s" "Emacs is now refreshing its package database...")
     (package-refresh-contents)
     (message "%s" " done.")
-	;; install the missing packages
+		;; install the missing packages
     (dolist (p required-packages)
       (when (not (package-installed-p p))
-		(package-install p))))
+				(package-install p))))
   
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el") 
@@ -50,14 +50,21 @@
   (add-hook 'js2-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
   
   ;; python
-  (setq tab-width 4)
-  (setq py-indent-offset 4)
   (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
 
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
   (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (setq tab-width 2)
+              (setq indent-tabs-mode nil)
+              (setq web-mode-markup-indent-offset 2)
+              (setq web-mode-css-indent-offset 2)
+              (setq web-mode-code-indent-offset 4)
+              (setq web-mode-indent-style 2)))
 
   ;; browse-kill-ring
   (browse-kill-ring-default-keybindings)
@@ -90,8 +97,8 @@
   ;; sources and faces
   (defun ac-yasnippet-candidates ()
     (if (null ac-prefix)
-	(yas-active-keys)
-	(all-completions ac-prefix (yas-active-keys))))
+        (yas-active-keys)
+      (all-completions ac-prefix (yas-active-keys))))
   (ac-define-source yasnippet
     '((depends yasnippet)
       (candidates . ac-yasnippet-candidates)
@@ -102,12 +109,12 @@
   (ac-define-source my-words-in-same-mode-buffers
     '((init . ac-update-word-index)
       (candidates . (ac-word-candidates
-		     (lambda (buffer)
-		       (derived-mode-p (buffer-local-value 'major-mode buffer)))))
+                     (lambda (buffer)
+                       (derived-mode-p (buffer-local-value 'major-mode buffer)))))
       (requires . 3)
       (limit . 5)))
   (setq-default ac-sources '(ac-source-yasnippet
-			     ac-source-my-words-in-same-mode-buffers))
+                             ac-source-my-words-in-same-mode-buffers))
   ;; modes to activate ac-mode
   (add-to-list 'ac-modes 'latex-mode)
   (add-to-list 'ac-modes 'lisp-mode)
@@ -153,18 +160,19 @@
 ;; variables
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
-(setq clean-buffer-list-delay-general 0)
+
+
 (setq magic-mode-alist ())
-(setq tab-width 4)
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
 (menu-bar-mode -1) ; no menu bar
-(setq linum-format "%3d ")
 (setq large-file-warning-threshold 5000000)
 (global-linum-mode 0) ; linum-mode off
+(setq linum-format "%3d ")
 (column-number-mode t)
 (line-number-mode t)
 (global-hl-line-mode 0) ; line highlight color
 (setq recentf-save-file "~/.emacs.d/recentf")
-(setq indent-tabs-mode nil)
 
 ;; start emacsserver
 (server-start)
@@ -411,7 +419,7 @@ This command does the inverse of `fill-region'."
   (interactive)
   (let ((sym (find-tag-default)))
     (if (null sym)
-	(message "No symbol at point")
+        (message "No symbol at point")
       (isearch-yank-regexp
        (concat "\\_<" (regexp-quote sym) "\\_>")))))
 (define-key isearch-mode-map "\C-\M-w" 'isearch-yank-symbol)
@@ -478,6 +486,11 @@ This command does the inverse of `fill-region'."
  '(org-level-2 ((t (:inherit outline-2 :foreground "color-81"))))
  '(org-level-3 ((t (:inherit outline-3 :foreground "color-137")))))
 
+(defun org-toggle-checkbox-with-prefix ()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively 'org-toggle-checkbox)))
+
 ;;-----------------------------------------------------------------------
 ;; Mac OS X
 ;;-----------------------------------------------------------------------
@@ -538,7 +551,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
 (define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
 (define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
-(define-key my-keys-minor-mode-map (kbd "C-c x") 'org-toggle-checkbox)
+(define-key my-keys-minor-mode-map (kbd "C-c x") 'org-toggle-checkbox-with-prefix)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 ;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
