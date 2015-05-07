@@ -25,6 +25,16 @@
   (evil-insert-newline-above))
 (define-key evil-normal-state-map (kbd "C-k") 'enter-one-line-above)
 
+;; in insert mode, highlight line
+(add-hook 'evil-insert-state-entry-hook
+          (lambda () (hl-line-mode t)))
+(add-hook 'evil-insert-state-exit-hook
+          (lambda () 
+            (let ((current-prefix-arg '(0)))
+              (call-interactively 'hl-line-mode))))
+(custom-set-faces
+ '(hl-line ((t (:background "color-236")))))
+
 ;; key chord
 (key-chord-mode 1)
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)

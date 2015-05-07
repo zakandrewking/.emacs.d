@@ -6,33 +6,33 @@
   (require 'cl)
   (require 'package)
   (add-to-list 'package-archives
-							 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+               '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (package-initialize)
 
   (defvar required-packages ()
     "a list of packages to ensure are installed at launch.")
   (setq required-packages '(evil magit deft key-chord js2-mode
-																 browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
-																 ess evil-surround deft markdown-mode auto-complete yasnippet
-																 sql-indent multi-term json-mode))
+                                 browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
+                                 ess evil-surround deft markdown-mode auto-complete yasnippet
+                                 sql-indent multi-term json-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
     (loop for p in required-packages
-					when (not (package-installed-p p)) do (return nil)
-					finally (return t)))
+          when (not (package-installed-p p)) do (return nil)
+          finally (return t)))
 
   ;; if not all packages are installed, check one by one and install the missing
   ;; ones.
   (unless (packages-installed-p)
-		;; check for new packages (package versions)
+    ;; check for new packages (package versions)
     (message "%s" "Emacs is now refreshing its package database...")
     (package-refresh-contents)
     (message "%s" " done.")
-		;; install the missing packages
+    ;; install the missing packages
     (dolist (p required-packages)
       (when (not (package-installed-p p))
-				(package-install p))))
+        (package-install p))))
   
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el") 
