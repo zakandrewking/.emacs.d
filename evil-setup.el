@@ -37,7 +37,11 @@
 
 ;; key chord
 (key-chord-mode 1)
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+(defun normal-state-forward ()
+  (interactive)
+  (evil-normal-state)
+  (forward-char))
+(key-chord-define evil-insert-state-map "jk" 'normal-state-forward)
 (key-chord-define evil-visual-state-map "jk" 'evil-normal-state)
 (key-chord-define evil-emacs-state-map "jk" 'evil-normal-state)
 (key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
@@ -84,6 +88,7 @@
 (evil-add-hjkl-bindings magit-commit-mode-map 'emacs)
 
 (evil-add-hjkl-bindings occur-mode 'emacs)
+(evil-add-hjkl-bindings ibuffer-mode 'emacs)
 (require 'browse-kill-ring)
 (define-key browse-kill-ring-mode-map (kbd "k") 'browse-kill-ring-previous) ; why is this slow!?
 (define-key browse-kill-ring-mode-map (kbd "j") 'browse-kill-ring-forward) ; why is this slow!?
