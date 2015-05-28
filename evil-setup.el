@@ -25,6 +25,12 @@
   (evil-insert-newline-above))
 (define-key evil-normal-state-map (kbd "C-k") 'enter-one-line-above)
 
+;; visual line mode keys
+(add-hook 'visual-line-mode-hook
+          (lambda () 
+            (define-key evil-normal-state-map (kbd "j") 'next-line)
+            (define-key evil-normal-state-map (kbd "k") 'previous-line)))
+
 ;; in insert mode, highlight line
 (add-hook 'evil-insert-state-entry-hook
           (lambda () (hl-line-mode t)))

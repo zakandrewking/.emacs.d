@@ -14,7 +14,7 @@
   (setq required-packages '(evil magit deft key-chord js2-mode
                                  browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
                                  ess evil-surround deft markdown-mode auto-complete yasnippet
-                                 sql-indent multi-term json-mode))
+                                 sql-indent multi-term json-mode ido-ubiquitous))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -151,7 +151,18 @@
 
   ;; json-mode
   (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
+
+  ;; ido for easy buffer switching
+  (require 'ido)
+  (ido-mode t)
+  (ido-everywhere 1)
+  ;; ido-ubiquitous
+  (require 'ido-ubiquitous)
+  (ido-ubiquitous-mode 1)
+  ;; increase this for unicode completion with C-x 8 RET
+  (setq ido-cr+-max-items 100000)
   )
+
 
 ;;-----------------------------------------------------------------------
 ;; setup
@@ -301,11 +312,6 @@
   "Backward kill word"
   (interactive "p")
   (backward-kill-word 1))
-
-;; ido for easy buffer switching
-;; http://www.emacswiki.org/emacs/InteractivelyDoThings#Ido
-(require 'ido)
-(ido-mode t)
 
 ;; stop annoying "Command attempted to use minibuffer while in minibuffer."
 ;; http://trey-jackson.blogspot.com/2010/04/emacs-tip-36-abort-minibuffer-when.html
@@ -482,6 +488,12 @@ This command does the inverse of `fill-region'."
   (org-metaright)
   (org-ctrl-c-minus))
 
+(defun org-metaright-or-cycle ()
+  (interactive)
+  (condition-case nil
+      (org-metaright)
+    (error (org-ctrl-c-minus))))
+
 (custom-set-faces
  '(org-level-2 ((t (:inherit outline-2 :foreground "color-81"))))
  '(org-level-3 ((t (:inherit outline-3 :foreground "color-137")))))
@@ -549,7 +561,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
 (define-key my-keys-minor-mode-map (kbd "M-j") 'org-insert-heading)
 (define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
-(define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright)
+(define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright-or-cycle)
 (define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key my-keys-minor-mode-map (kbd "C-c x") 'org-toggle-checkbox-with-prefix)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
