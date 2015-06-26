@@ -2,6 +2,10 @@
 (evil-mode 1)
 (setq evil-want-fine-undo t)
 
+;; TODO try space as leader key
+;; http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+;; https://github.com/cofi/evil-leader
+
 ;; find tags
 (defun my-jump-to-tag ()
   (interactive)
@@ -109,3 +113,8 @@
 ;;      "C-w j" (lookup-key evil-motion-state-map "C-w j")
 ;;      "C-w k" (lookup-key evil-motion-state-map "C-w k")
 ;;      "C-w l" (lookup-key evil-motion-state-map "C-w l")))
+
+;; expand region in normal mode
+(require 'expand-region)
+(define-key evil-normal-state-map (kbd "+") 'er/expand-region)
+;; - to contract region, 0 to reset

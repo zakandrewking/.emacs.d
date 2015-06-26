@@ -12,9 +12,13 @@
   (defvar required-packages ()
     "a list of packages to ensure are installed at launch.")
   (setq required-packages '(evil magit deft key-chord js2-mode
-                                 browse-kill-ring yaml-mode ag smart-mode-line web-mode auctex
-                                 ess evil-surround deft markdown-mode auto-complete yasnippet
-                                 sql-indent multi-term json-mode ido-ubiquitous))
+                                 browse-kill-ring yaml-mode ag
+                                 smart-mode-line web-mode auctex
+                                 ess evil-surround deft
+                                 markdown-mode auto-complete
+                                 yasnippet sql-indent multi-term
+                                 json-mode ido-ubiquitous
+                                 expand-region))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
