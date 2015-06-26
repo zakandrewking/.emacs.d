@@ -90,6 +90,9 @@
   "K" 'magit-discard-item
   "l" 'magit-key-mode-popup-logging
   "h" 'magit-toggle-diff-refine-hunk)
+  ;; "C-w" nil
+  ;; "C-w h" 'evil-window-left
+  ;; "C-w l" 'evil-window-right)
 (evil-add-hjkl-bindings magit-log-mode-map 'emacs)
 (evil-add-hjkl-bindings magit-commit-mode-map 'emacs)
 

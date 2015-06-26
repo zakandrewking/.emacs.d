@@ -57,6 +57,7 @@
   (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
   (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
+  (setq web-mode-enable-css-colorization t)
   (add-hook 'web-mode-hook
             (lambda ()
               (setq tab-width 2)
@@ -88,6 +89,15 @@
   (put 'erase-buffer 'disabled nil)
   (put 'toggle-mac-option-modifier 'disabled t)
   (add-hook 'org-mode-hook 'auto-fill-mode)
+  ;; This fix may be necessary so deft width doesn't stretch too far
+  ;; https://github.com/timvisher/deft/issues/1
+  ;;    (defun deft-buffer-setup ()
+  ;;    "Render the file browser in the *Deft* buffer."
+  ;; -  (setq deft-window-width (window-width))
+  ;; +  (setq deft-window-width (- (window-width) 2))
+  ;;    (let ((inhibit-read-only t))
+  ;;      (erase-buffer))
+  ;;    (remove-overlays)
 
   ;; markdown
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
@@ -156,6 +166,7 @@
   (require 'ido)
   (ido-mode t)
   (ido-everywhere 1)
+  (setq ido-case-fold t)
   ;; ido-ubiquitous
   (require 'ido-ubiquitous)
   (ido-ubiquitous-mode 1)
