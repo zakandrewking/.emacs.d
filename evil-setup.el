@@ -1,5 +1,6 @@
 ;; set up evil mode to work nicely
 (evil-mode 1)
+(evil-jumper-mode 1)
 (setq evil-want-fine-undo t)
 
 ;; TODO try space as leader key

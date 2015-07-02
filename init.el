@@ -18,7 +18,7 @@
                                  markdown-mode auto-complete
                                  yasnippet sql-indent multi-term
                                  json-mode ido-ubiquitous
-                                 expand-region))
+                                 expand-region evil-jumper))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
