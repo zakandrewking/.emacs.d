@@ -18,7 +18,8 @@
                                  markdown-mode auto-complete
                                  yasnippet sql-indent multi-term
                                  json-mode ido-ubiquitous
-                                 expand-region evil-jumper))
+                                 expand-region evil-jumper
+                                 elm-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -93,8 +94,9 @@
   (put 'erase-buffer 'disabled nil)
   (put 'toggle-mac-option-modifier 'disabled t)
   (add-hook 'org-mode-hook 'auto-fill-mode)
-  ;; This fix may be necessary so deft width doesn't stretch too far
+  ;; This fix may be necessary so deft width doesn't stretch too far:
   ;; https://github.com/timvisher/deft/issues/1
+  ;; 
   ;;    (defun deft-buffer-setup ()
   ;;    "Render the file browser in the *Deft* buffer."
   ;; -  (setq deft-window-width (window-width))
@@ -102,6 +104,8 @@
   ;;    (let ((inhibit-read-only t))
   ;;      (erase-buffer))
   ;;    (remove-overlays)
+  ;; 
+  ;; After making the change, run C-u 0 M-x byte-compile-file deft.el
 
   ;; markdown
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
@@ -481,6 +485,9 @@ This command does the inverse of `fill-region'."
 
 ;; save automatically
 (setq TeX-save-query nil)
+
+;; color sections
+(setq font-latex-fontify-sectioning 'color)
 
 ;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; (add-hook 'latex-mode-hook 'flyspell-mode)
