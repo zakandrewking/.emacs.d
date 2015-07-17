@@ -42,6 +42,10 @@
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el") 
 
+  ;; magit
+  ;; Use H in diff to refine hunk (e.g. show word diff)
+  (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
+
   ;; smart-mode-line
   (setq sml/no-confirm-load-theme t)
   (sml/setup)
