@@ -13,3 +13,4 @@ bookmarks
 recentf
 *.desktop
 *.desktop.lock
+/smex-items

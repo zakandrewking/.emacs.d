@@ -44,7 +44,7 @@
             (let ((current-prefix-arg '(0)))
               (call-interactively 'hl-line-mode))))
 (custom-set-faces
- '(hl-line ((t (:background "color-236")))))
+ '(hl-line ((t (:background "gray18")))))
 
 ;; key chord
 (key-chord-mode 1)

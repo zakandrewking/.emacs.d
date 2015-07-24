@@ -19,7 +19,7 @@
                                  yasnippet sql-indent multi-term
                                  json-mode ido-ubiquitous
                                  expand-region evil-jumper
-                                 elm-mode))
+                                 elm-mode smex))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -45,6 +45,7 @@
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
   (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
+  ;; play with magit-push-always-verify
 
   ;; smart-mode-line
   (setq sml/no-confirm-load-theme t)
@@ -185,6 +186,10 @@
   (ido-ubiquitous-mode 1)
   ;; increase this for unicode completion with C-x 8 RET
   (setq ido-cr+-max-items 100000)
+
+  ;; smex
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
   )
 
 
@@ -195,7 +200,6 @@
 ;; variables
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
-
 
 (setq magic-mode-alist ())
 (setq-default tab-width 4)
@@ -216,6 +220,8 @@
 ;; Should match terminal color theme,
 ;; or at least add `export TERM=xterm-256color` to your bash_profile.
 (load-theme 'wombat t)
+(custom-set-faces
+ '(default ((t (:background "gray14")))))
 
 ;; date and time
 (custom-set-variables
@@ -223,19 +229,22 @@
  '(display-time-default-load-average nil))
 (display-time)
 
+;; terminal emacs
 ;; Enable mouse support
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] '(lambda ()
-                               (interactive)
-                               (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                               (interactive)
-                               (scroll-up 1)))
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t)
-  )
+(require 'mouse)
+(xterm-mouse-mode t)
+(global-set-key [mouse-4] '(lambda ()
+                            (interactive)
+                            (scroll-down 1)))
+(global-set-key [mouse-5] '(lambda ()
+                            (interactive)
+                            (scroll-up 1)))
+(defun track-mouse (e))
+(setq mouse-sel-mode t)
+
+;; parens
+;; turn on highlight matching brackets when cursor is on one
+(electric-pair-mode 1)
 
 ;; gui Emacs
 ;; don't use Mac OSX full screen 
@@ -243,10 +252,13 @@
 ;; font
 (set-face-attribute 'default nil :family "Inconsolata"
                     :height 170 :weight 'normal)
-;; turn off toolbar
+;; turn off toolbar and scrollbar
 (tool-bar-mode -1)
+(scroll-bar-mode -1)
 ;; command-enter for fullscreen
 (global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
+;; no blinking cursor
+(blink-cursor-mode 0)
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
@@ -548,8 +560,9 @@ This command does the inverse of `fill-region'."
     (error (org-ctrl-c-minus))))
 
 (custom-set-faces
- '(org-level-2 ((t (:inherit outline-2 :foreground "color-81"))))
- '(org-level-3 ((t (:inherit outline-3 :foreground "color-137")))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "turquoise1"))))
+ '(org-level-3 ((t (:inherit outline-3 :foreground "tan3")))))
+
 
 (defun org-toggle-checkbox-with-prefix ()
   (interactive)
