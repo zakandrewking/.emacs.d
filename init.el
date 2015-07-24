@@ -163,6 +163,7 @@
   
   ;; yasnippet
   (yas-global-mode 1)
+  (setq yas-snippet-dirs (list "~/.emacs.d/snippets"))
   (define-key yas-minor-mode-map (kbd "<tab>") nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (define-key yas-minor-mode-map (kbd "<backtab>") 'yas-expand) ; shift-tab
@@ -235,6 +236,17 @@
   (defun track-mouse (e))
   (setq mouse-sel-mode t)
   )
+
+;; gui Emacs
+;; don't use Mac OSX full screen 
+(setq ns-use-native-fullscreen nil)
+;; font
+(set-face-attribute 'default nil :family "Inconsolata"
+                    :height 170 :weight 'normal)
+;; turn off toolbar
+(tool-bar-mode -1)
+;; command-enter for fullscreen
+(global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
@@ -344,6 +356,14 @@
     (abort-recursive-edit)))
 
 (add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
+
+;;-----------------------------------------------------------------------
+;; Regular expressions
+;;-----------------------------------------------------------------------
+
+;; use string regex style
+(require 're-builder)
+(setq reb-re-syntax 'string)
 
 ;;-----------------------------------------------------------------------
 ;; ERC
@@ -474,6 +494,13 @@ This command does the inverse of `fill-region'."
             (setq matlab-indent-level 4)
             (setq fill-column 80)
             (define-key matlab-mode-map "\M-;" 'comment-dwim)))
+
+;;-----------------------------------------------------------------------
+;; XML 
+;;-----------------------------------------------------------------------
+
+;; don't auto-validate
+(setq rng-nxml-auto-validate-flag nil)
 
 ;;-----------------------------------------------------------------------
 ;; Latex programming
