@@ -220,6 +220,7 @@
 (line-number-mode t)
 (global-hl-line-mode 0) ; line highlight color
 (setq recentf-save-file "~/.emacs.d/recentf")
+(setq initial-scratch-message "")
 
 ;; start emacsserver
 (server-start)
