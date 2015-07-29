@@ -19,7 +19,7 @@
                                  yasnippet sql-indent multi-term
                                  json-mode ido-ubiquitous
                                  expand-region evil-jumper
-                                 elm-mode smex))
+                                 elm-mode smex org-download))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -45,7 +45,7 @@
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
   (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
-  ;; play with magit-push-always-verify
+  (setq magit-push-always-verify nil)
 
   ;; smart-mode-line
   (setq sml/no-confirm-load-theme t)
@@ -190,6 +190,15 @@
   ;; smex
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+  ;; org-download - drag-and-drop download settings
+  (require 'org-download)
+  (setq-default org-download-heading-lvl nil)
+  (setq-default org-download-image-dir "IMG")
+
+  ;; no menu bar (wasn't working higher up)
+  (menu-bar-mode -1) 
+
   )
 
 
@@ -204,7 +213,6 @@
 (setq magic-mode-alist ())
 (setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
-(menu-bar-mode -1) ; no menu bar
 (setq large-file-warning-threshold 5000000)
 (global-linum-mode 0) ; linum-mode off
 (setq linum-format "%3d ")
@@ -532,6 +540,11 @@ This command does the inverse of `fill-region'."
 ;; color sections
 (setq font-latex-fontify-sectioning 'color)
 
+;; previews with preview-latex and ghostscript
+(setq preview-gs-options
+      (quote
+       ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
+
 ;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 ;; (add-hook 'latex-mode-hook 'flyspell-mode)
 
@@ -562,7 +575,6 @@ This command does the inverse of `fill-region'."
 (custom-set-faces
  '(org-level-2 ((t (:inherit outline-2 :foreground "turquoise1"))))
  '(org-level-3 ((t (:inherit outline-3 :foreground "tan3")))))
-
 
 (defun org-toggle-checkbox-with-prefix ()
   (interactive)
