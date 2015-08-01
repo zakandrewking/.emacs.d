@@ -1,4 +1,19 @@
 ;;-----------------------------------------------------------------------
+;; variables
+;;-----------------------------------------------------------------------
+
+(defvar editing-modes
+  (list 'latex-mode 'lisp-mode 'python-mode 'matlab-mode
+        'shell-script-mode 'js2-mode 'markdown-mode 'haskell-mode
+        'org-mode 'c-mode 'css-mode)
+  "Common editing modes for auto-complete & removing trailing whitespace")
+(defvar editing-mode-hooks
+  (list 'latex-mode-hook 'lisp-mode-hook 'python-mode-hook 'matlab-mode-hook
+        'shell-script-mode-hook 'js2-mode-hook 'markdown-mode-hook
+        'haskell-mode-hook 'org-mode-hook 'c-mode-hook 'css-mode-hook)
+  "Hooks for common editing modes for auto-complete & removing trailing whitespace")
+
+;;-----------------------------------------------------------------------
 ;; packages
 ;;-----------------------------------------------------------------------
 
@@ -38,9 +53,9 @@
     (dolist (p required-packages)
       (when (not (package-installed-p p))
         (package-install p))))
-  
+
   ;; evil mode setup
-  (load "~/.emacs.d/evil-setup.el") 
+  (load "~/.emacs.d/evil-setup.el")
 
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
@@ -58,7 +73,7 @@
   ;; include underscores in the word definition (especially useful for evil-mode
   ;; superstar)
   (add-hook 'js2-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
-  
+
   ;; python
   (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
 
@@ -79,7 +94,7 @@
 
   ;; browse-kill-ring
   (browse-kill-ring-default-keybindings)
-  
+
   ;; yaml-mode
   (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
 
@@ -101,7 +116,7 @@
   (add-hook 'org-mode-hook 'auto-fill-mode)
   ;; This fix may be necessary so deft width doesn't stretch too far:
   ;; https://github.com/timvisher/deft/issues/1
-  ;; 
+  ;;
   ;;    (defun deft-buffer-setup ()
   ;;    "Render the file browser in the *Deft* buffer."
   ;; -  (setq deft-window-width (window-width))
@@ -109,12 +124,12 @@
   ;;    (let ((inhibit-read-only t))
   ;;      (erase-buffer))
   ;;    (remove-overlays)
-  ;; 
+  ;;
   ;; After making the change, run C-u 0 M-x byte-compile-file deft.el
 
   ;; markdown
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-  
+
   ;; auto-complete
   (global-auto-complete-mode 1)
   ;; sources and faces
@@ -139,15 +154,9 @@
   (setq-default ac-sources '(ac-source-yasnippet
                              ac-source-my-words-in-same-mode-buffers))
   ;; modes to activate ac-mode
-  (add-to-list 'ac-modes 'latex-mode)
-  (add-to-list 'ac-modes 'lisp-mode)
-  (add-to-list 'ac-modes 'python-mode)
-  (add-to-list 'ac-modes 'matlab-mode)
-  (add-to-list 'ac-modes 'shell-script-mode)
-  (add-to-list 'ac-modes 'js2-mode)
-  (add-to-list 'ac-modes 'markdown-mode)
-  (add-to-list 'ac-modes 'haskell-mode)
-  (add-to-list 'ac-modes 'org-mode)
+  (defun setup-ac (mode)
+    (add-to-list 'ac-modes mode))
+  (mapcar 'setup-ac editing-modes)
   ;; C-n C-p for next/previous expansion
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous)
@@ -161,7 +170,7 @@
   ;; (setq ac-candidate-limit 5)
   ;; enable ac even in strings, comments, and docs
   (setq ac-disable-faces nil)
-  
+
   ;; yasnippet
   (yas-global-mode 1)
   (setq yas-snippet-dirs (list "~/.emacs.d/snippets"))
@@ -171,7 +180,7 @@
 
   ;; sql-indent
   (eval-after-load "sql"
-    (load-library "sql-indent")) 
+    (load-library "sql-indent"))
 
   ;; json-mode
   (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
@@ -197,7 +206,7 @@
   (setq-default org-download-image-dir "IMG")
 
   ;; no menu bar (wasn't working higher up)
-  (menu-bar-mode -1) 
+  (menu-bar-mode -1)
 
   )
 
@@ -255,8 +264,15 @@
 ;; turn on highlight matching brackets when cursor is on one
 (electric-pair-mode 1)
 
+;; remove trailing whitespace
+(defun remove-trailing-whitepace-on-save ()
+  (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
+(mapcar (lambda (hook)
+          (add-hook hook 'remove-trailing-whitepace-on-save))
+        editing-mode-hooks)
+
 ;; gui Emacs
-;; don't use Mac OSX full screen 
+;; don't use Mac OSX full screen
 (setq ns-use-native-fullscreen nil)
 ;; font
 (set-face-attribute 'default nil :family "Inconsolata"
@@ -288,7 +304,7 @@
 (run-with-idle-timer 60 t '(lambda () (get-buffer-create "*scratch*")))
 
 ;; color shell command outputs
-;; 
+;;
 ;; e.g. in dired mode, call ! on a file, give `jq -C '.'`, and see a colorful
 ;; output
 ;; (require 'ansi-color)
@@ -477,7 +493,7 @@ This command does the inverse of `fill-region'."
 ;; http://www.emacswiki.org/emacs/SearchAtPoint
 (require 'etags)
 (defun isearch-yank-regexp (regexp)
-  "Pull REGEXP into search regexp." 
+  "Pull REGEXP into search regexp."
   (let ((isearch-regexp nil)) ;; Dynamic binding of global.
     (isearch-yank-string regexp))
   (if (not isearch-regexp)
@@ -517,7 +533,7 @@ This command does the inverse of `fill-region'."
             (define-key matlab-mode-map "\M-;" 'comment-dwim)))
 
 ;;-----------------------------------------------------------------------
-;; XML 
+;; XML
 ;;-----------------------------------------------------------------------
 
 ;; don't auto-validate
@@ -529,6 +545,9 @@ This command does the inverse of `fill-region'."
 
 (require 'tex)
 (add-hook 'LaTeX-mode-hook (lambda () (visual-line-mode 1)))
+(add-hook 'LaTeX-mode-hook (lambda ()
+                             (flyspell-mode 1)
+                             (ac-flyspell-workaround))
 
 (defun use-default-paragraph-delimiters ()
   (setq paragraph-start (default-value 'paragraph-start)
@@ -545,9 +564,6 @@ This command does the inverse of `fill-region'."
 (setq preview-gs-options
       (quote
        ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
-
-;; (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
-;; (add-hook 'latex-mode-hook 'flyspell-mode)
 
 ;;-----------------------------------------------------------------------
 ;; Org mode
@@ -617,7 +633,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c q") 'auto-fill-mode)
 ;; (define-key my-keys-minor-mode-map "\C-u" 'backward-kill-line) ;; C-u: universal-argument
 ;; (define-key my-keys-minor-mode-map "\C-x\ \C-r" 'find-file-read-only)
-(define-key my-keys-minor-mode-map "\C-x\ \C-r" 'ido-recentf-open) 
+(define-key my-keys-minor-mode-map "\C-x\ \C-r" 'ido-recentf-open)
 ;; (define-key my-keys-minor-mode-map (kbd "M-<backspace>") 'my-backward-kill-word)
 ;; (define-key my-keys-minor-mode-map (kbd "M-<up>") 'backward-paragraph)
 ;; (define-key my-keys-minor-mode-map (kbd "M-<down>") 'forward-paragraph)
