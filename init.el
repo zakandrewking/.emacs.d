@@ -547,7 +547,7 @@ This command does the inverse of `fill-region'."
 (add-hook 'LaTeX-mode-hook (lambda () (visual-line-mode 1)))
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (flyspell-mode 1)
-                             (ac-flyspell-workaround))
+                             (ac-flyspell-workaround)))
 
 (defun use-default-paragraph-delimiters ()
   (setq paragraph-start (default-value 'paragraph-start)
