@@ -1,19 +1,4 @@
 ;;-----------------------------------------------------------------------
-;; variables
-;;-----------------------------------------------------------------------
-
-(defvar editing-modes
-  (list 'latex-mode 'lisp-mode 'python-mode 'matlab-mode
-        'shell-script-mode 'js2-mode 'markdown-mode 'haskell-mode
-        'org-mode 'c-mode 'css-mode)
-  "Common editing modes for auto-complete & removing trailing whitespace")
-(defvar editing-mode-hooks
-  (list 'latex-mode-hook 'lisp-mode-hook 'python-mode-hook 'matlab-mode-hook
-        'shell-script-mode-hook 'js2-mode-hook 'markdown-mode-hook
-        'haskell-mode-hook 'org-mode-hook 'c-mode-hook 'css-mode-hook)
-  "Hooks for common editing modes for auto-complete & removing trailing whitespace")
-
-;;-----------------------------------------------------------------------
 ;; packages
 ;;-----------------------------------------------------------------------
 
@@ -156,7 +141,10 @@
   ;; modes to activate ac-mode
   (defun setup-ac (mode)
     (add-to-list 'ac-modes mode))
-  (mapcar 'setup-ac editing-modes)
+  (mapcar 'setup-ac
+          (list 'latex-mode 'lisp-mode 'python-mode 'matlab-mode
+                'shell-script-mode 'js2-mode 'markdown-mode
+                'haskell-mode 'org-mode 'c-mode 'css-mode))
   ;; C-n C-p for next/previous expansion
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous)
@@ -269,7 +257,10 @@
   (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
 (mapcar (lambda (hook)
           (add-hook hook 'remove-trailing-whitepace-on-save))
-        editing-mode-hooks)
+        (list 'latex-mode-hook 'lisp-mode-hook 'python-mode-hook
+              'matlab-mode-hook 'shell-script-mode-hook
+              'js2-mode-hook 'markdown-mode-hook
+              'haskell-mode-hook 'c-mode-hook 'css-mode-hook))
 
 ;; gui Emacs
 ;; don't use Mac OSX full screen
@@ -284,6 +275,14 @@
 (global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
 ;; no blinking cursor
 (blink-cursor-mode 0)
+;; PATH
+(getenv "PATH")
+(setenv "PATH"
+        (concat
+         "/usr/local/bin" ":"
+         "/usr/texbin" ":"
+
+         (getenv "PATH")))
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
