@@ -42,6 +42,9 @@
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el")
 
+  ;; js2-mode setup
+  (load "~/.emacs.d/js2-setup.el")
+
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
   (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
@@ -51,13 +54,6 @@
   (setq sml/no-confirm-load-theme t)
   (sml/setup)
   (sml/apply-theme 'respectful)
-
-  ;; js2-mode setup
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-  (add-to-list 'auto-mode-alist '("\\.json\\'" . javascript-mode))
-  ;; include underscores in the word definition (especially useful for evil-mode
-  ;; superstar)
-  (add-hook 'js2-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
 
   ;; python
   (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
@@ -597,6 +593,15 @@ This command does the inverse of `fill-region'."
   (let ((current-prefix-arg '(4)))
     (call-interactively 'org-toggle-checkbox)))
 
+;; keyboard shortcuts
+(define-key org-mode-map (kbd "C-c 9") 'org-cycle)
+(define-key org-mode-map (kbd "C-c 0") 'org-global-cycle)
+(define-key org-mode-map (kbd "M-j") 'org-insert-heading)
+(define-key org-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
+(define-key org-mode-map (kbd "C-M-f") 'org-metaright-or-cycle)
+(define-key org-mode-map (kbd "C-M-b") 'org-metaleft)
+(define-key org-mode-map (kbd "C-c x") 'org-toggle-checkbox-with-prefix)
+
 ;;-----------------------------------------------------------------------
 ;; Mac OS X
 ;;-----------------------------------------------------------------------
@@ -651,13 +656,6 @@ This command does the inverse of `fill-region'."
 ;; (define-key my-keys-minor-mode-map (kbd "C-M-i") 'indent-for-tab-command)
 ;; (define-key my-keys-minor-mode-map (kbd "C-j") 'indent-return-indent)
 ;; (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
-(define-key my-keys-minor-mode-map (kbd "C-c 9") 'org-cycle)
-(define-key my-keys-minor-mode-map (kbd "C-c 0") 'org-global-cycle)
-(define-key my-keys-minor-mode-map (kbd "M-j") 'org-insert-heading)
-(define-key my-keys-minor-mode-map (kbd "C-M-j") 'my-org-right-and-heading)
-(define-key my-keys-minor-mode-map (kbd "C-M-f") 'org-metaright-or-cycle)
-(define-key my-keys-minor-mode-map (kbd "C-M-b") 'org-metaleft)
-(define-key my-keys-minor-mode-map (kbd "C-c x") 'org-toggle-checkbox-with-prefix)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 ;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
