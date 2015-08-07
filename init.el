@@ -565,6 +565,8 @@ This command does the inverse of `fill-region'."
 ;; Org mode
 ;;-----------------------------------------------------------------------
 
+(require 'org)
+
 ;; always open text in org-mode
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
 
