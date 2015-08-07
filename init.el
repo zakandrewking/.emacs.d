@@ -279,6 +279,7 @@
          "/usr/texbin" ":"
 
          (getenv "PATH")))
+(setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
