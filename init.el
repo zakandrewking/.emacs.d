@@ -194,7 +194,6 @@
 
   )
 
-
 ;;-----------------------------------------------------------------------
 ;; setup
 ;;-----------------------------------------------------------------------
@@ -213,7 +212,6 @@
 (line-number-mode t)
 (global-hl-line-mode 0) ; line highlight color
 (setq recentf-save-file "~/.emacs.d/recentf")
-(setq initial-scratch-message "")
 
 ;; start emacsserver
 (server-start)
@@ -231,19 +229,6 @@
  '(display-time-default-load-average nil))
 (display-time)
 
-;; terminal emacs
-;; Enable mouse support
-(require 'mouse)
-(xterm-mouse-mode t)
-(global-set-key [mouse-4] '(lambda ()
-                            (interactive)
-                            (scroll-down 1)))
-(global-set-key [mouse-5] '(lambda ()
-                            (interactive)
-                            (scroll-up 1)))
-(defun track-mouse (e))
-(setq mouse-sel-mode t)
-
 ;; parens
 ;; turn on highlight matching brackets when cursor is on one
 (electric-pair-mode 1)
@@ -257,29 +242,6 @@
               'matlab-mode-hook 'shell-script-mode-hook
               'js2-mode-hook 'markdown-mode-hook
               'haskell-mode-hook 'c-mode-hook 'css-mode-hook))
-
-;; gui Emacs
-;; don't use Mac OSX full screen
-(setq ns-use-native-fullscreen nil)
-;; font
-(set-face-attribute 'default nil :family "Inconsolata"
-                    :height 170 :weight 'normal)
-;; turn off toolbar and scrollbar
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-;; command-enter for fullscreen
-(global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
-;; no blinking cursor
-(blink-cursor-mode 0)
-;; PATH
-(getenv "PATH")
-(setenv "PATH"
-        (concat
-         "/usr/local/bin" ":"
-         "/usr/texbin" ":"
-
-         (getenv "PATH")))
-(setq exec-path (append exec-path '("/usr/local/bin")))
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
@@ -297,6 +259,7 @@
 
 ;; remake the scratch buffer
 ;; http://stackoverflow.com/questions/234963/re-open-scratch-buffer-in-emacs
+(setq initial-scratch-message "")
 (run-with-idle-timer 60 t '(lambda () (get-buffer-create "*scratch*")))
 
 ;; color shell command outputs
@@ -312,6 +275,93 @@
 ;;          (string= (buffer-name buf) "*Shell Command Output*")
 ;;          (with-current-buffer buf
 ;;            (ansi-color-apply-on-region (point-min) (point-max))))))
+
+;;-----------------------------------------------------------------------
+;; System-specific functions
+;;-----------------------------------------------------------------------
+
+;; Terminal emacs enable mouse support
+(unless window-system
+  (require 'mouse)
+  (xterm-mouse-mode t)
+  (global-set-key [mouse-4] '(lambda ()
+                               (interactive)
+                               (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda ()
+                               (interactive)
+                               (scroll-up 1)))
+  (defun track-mouse (e))
+  (setq mouse-sel-mode t)
+  )
+
+;; Mac OS X use M-x locate
+(setq locate-command "mdfind")
+
+;; Mac OS X system copy paste
+(defun pt-pbpaste ()
+  "Paste data from pasteboard."
+  (interactive)
+  (shell-command-on-region
+   (point)
+   (if mark-active (mark) (point))
+   "pbpaste" nil t))
+
+(defun pt-pbcopy ()
+  "Copy region to pasteboard."
+  (interactive)
+  (print (mark))
+  (when mark-active
+    (shell-command-on-region
+     (point) (mark) "pbcopy")
+    (kill-buffer "*Shell Command Output*")))
+
+(defun pt-cut()
+  "Cut region and put on OS X system pasteboard."
+  (interactive)
+  (pt-pbcopy)
+  (delete-region (region-beginning) (region-end)))
+
+;; GUI Emacs
+(when window-system
+  ;; don't use Mac OSX full screen
+  (setq ns-use-native-fullscreen nil)
+  ;; font
+  (set-face-attribute 'default nil :family "Inconsolata"
+                      :height 170 :weight 'normal)
+  ;; turn off toolbar and scrollbar
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  ;; command-enter for fullscreen
+  (global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
+  ;; no blinking cursor
+  (blink-cursor-mode 0)
+  ;; PATH
+  (getenv "PATH")
+  (setenv "PATH"
+          (concat
+           "/usr/local/bin" ":"
+           "/usr/texbin" ":"
+
+           (getenv "PATH")))
+  (setq exec-path (append exec-path '("/usr/local/bin")))
+
+  ;; Separate the clipboard. Adapted from:
+  ;; http://stackoverflow.com/questions/22849281/on-emacs-for-osx-how-to-keep-kill-ring-and-clipboard-separate
+  (defun isolate-kill-ring()
+    "Isolate Emacs kill ring from OS X system pasteboard."
+    (interactive)
+    (setq interprogram-cut-function nil)
+    (setq interprogram-paste-function nil))
+
+  ;; separate kill ring from clipboard
+  (isolate-kill-ring)
+  ;; bind CMD+C to pasteboard-copy
+  (global-set-key (kbd "s-c") 'pt-pbcopy)
+  ;; bind CMD+V to pasteboard-paste
+  (global-set-key (kbd "s-v") 'pt-pbpaste)
+  ;; bind CMD+X to pasteboard-cut
+  (global-set-key (kbd "s-x") 'pt-cut)
+  )
 
 ;;-----------------------------------------------------------------------
 ;; functions
@@ -604,31 +654,6 @@ This command does the inverse of `fill-region'."
 (define-key org-mode-map (kbd "C-M-f") 'org-metaright-or-cycle)
 (define-key org-mode-map (kbd "C-M-b") 'org-metaleft)
 (define-key org-mode-map (kbd "C-c x") 'org-toggle-checkbox-with-prefix)
-
-;;-----------------------------------------------------------------------
-;; Mac OS X
-;;-----------------------------------------------------------------------
-
-;; system copy paste
-(defun pt-pbpaste ()
-  "Paste data from pasteboard."
-  (interactive)
-  (shell-command-on-region
-   (point)
-   (if mark-active (mark) (point))
-   "pbpaste" nil t))
-
-(defun pt-pbcopy ()
-  "Copy region to pasteboard."
-  (interactive)
-  (print (mark))
-  (when mark-active
-    (shell-command-on-region
-     (point) (mark) "pbcopy")
-    (kill-buffer "*Shell Command Output*")))
-
-;; use M-x locate
-(setq locate-command "mdfind")
 
 ;;-----------------------------------------------------------------------
 ;; key bindings
