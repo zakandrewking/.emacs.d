@@ -57,6 +57,7 @@
 
   ;; python
   (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
+  (setq python-shell-interpreter "ipython")
 
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
@@ -281,18 +282,18 @@
 ;;-----------------------------------------------------------------------
 
 ;; Terminal emacs enable mouse support
-(unless window-system
-  (require 'mouse)
-  (xterm-mouse-mode t)
-  (global-set-key [mouse-4] '(lambda ()
-                               (interactive)
-                               (scroll-down 1)))
-  (global-set-key [mouse-5] '(lambda ()
-                               (interactive)
-                               (scroll-up 1)))
-  (defun track-mouse (e))
-  (setq mouse-sel-mode t)
-  )
+;; (unless window-system ;; emacs daemon runs both terminal and gui emacs
+(require 'mouse)
+(xterm-mouse-mode t)
+(global-set-key [mouse-4] '(lambda ()
+                             (interactive)
+                             (scroll-down 1)))
+(global-set-key [mouse-5] '(lambda ()
+                             (interactive)
+                             (scroll-up 1)))
+(defun track-mouse (e))
+(setq mouse-sel-mode t)
+;; )
 
 ;; Mac OS X use M-x locate
 (setq locate-command "mdfind")
@@ -322,46 +323,46 @@
   (delete-region (region-beginning) (region-end)))
 
 ;; GUI Emacs
-(when window-system
-  ;; don't use Mac OSX full screen
-  (setq ns-use-native-fullscreen nil)
-  ;; font
-  (set-face-attribute 'default nil :family "Inconsolata"
-                      :height 170 :weight 'normal)
-  ;; turn off toolbar and scrollbar
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  ;; command-enter for fullscreen
-  (global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
-  ;; no blinking cursor
-  (blink-cursor-mode 0)
-  ;; PATH
-  (getenv "PATH")
-  (setenv "PATH"
-          (concat
-           "/usr/local/bin" ":"
-           "/usr/texbin" ":"
+;; (when window-system ;; run this code when the emacs daemon starts too
+;; don't use Mac OSX full screen
+(setq ns-use-native-fullscreen nil)
+;; font
+(set-face-attribute 'default nil :family "Inconsolata"
+                    :height 170 :weight 'normal)
+;; turn off toolbar and scrollbar
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+;; command-enter for fullscreen
+(global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
+;; no blinking cursor
+(blink-cursor-mode 0)
+;; PATH
+(getenv "PATH")
+(setenv "PATH"
+        (concat
+         "/usr/local/bin" ":"
+         "/usr/texbin" ":"
 
-           (getenv "PATH")))
-  (setq exec-path (append exec-path '("/usr/local/bin")))
+         (getenv "PATH")))
+(setq exec-path (append exec-path '("/usr/local/bin")))
 
-  ;; Separate the clipboard. Adapted from:
-  ;; http://stackoverflow.com/questions/22849281/on-emacs-for-osx-how-to-keep-kill-ring-and-clipboard-separate
-  (defun isolate-kill-ring()
-    "Isolate Emacs kill ring from OS X system pasteboard."
-    (interactive)
-    (setq interprogram-cut-function nil)
-    (setq interprogram-paste-function nil))
+;; Separate the clipboard. Adapted from:
+;; http://stackoverflow.com/questions/22849281/on-emacs-for-osx-how-to-keep-kill-ring-and-clipboard-separate
+(defun isolate-kill-ring()
+  "Isolate Emacs kill ring from OS X system pasteboard."
+  (interactive)
+  (setq interprogram-cut-function nil)
+  (setq interprogram-paste-function nil))
 
-  ;; separate kill ring from clipboard
-  (isolate-kill-ring)
-  ;; bind CMD+C to pasteboard-copy
-  (global-set-key (kbd "s-c") 'pt-pbcopy)
-  ;; bind CMD+V to pasteboard-paste
-  (global-set-key (kbd "s-v") 'pt-pbpaste)
-  ;; bind CMD+X to pasteboard-cut
-  (global-set-key (kbd "s-x") 'pt-cut)
-  )
+;; separate kill ring from clipboard
+(isolate-kill-ring)
+;; bind CMD+C to pasteboard-copy
+(global-set-key (kbd "s-c") 'pt-pbcopy)
+;; bind CMD+V to pasteboard-paste
+(global-set-key (kbd "s-v") 'pt-pbpaste)
+;; bind CMD+X to pasteboard-cut
+(global-set-key (kbd "s-x") 'pt-cut)
+;; )
 
 ;;-----------------------------------------------------------------------
 ;; functions
