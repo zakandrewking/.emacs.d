@@ -591,10 +591,20 @@ This command does the inverse of `fill-region'."
 ;;-----------------------------------------------------------------------
 
 (require 'tex)
+;; from the manual
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+
+;; modes to activate
 (add-hook 'LaTeX-mode-hook (lambda () (visual-line-mode 1)))
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (flyspell-mode 1)
                              (ac-flyspell-workaround)))
+
+;; syntax highlighting
+(setq font-latex-match-reference-keywords
+      '(("citep" "[{")
+        ("citet" "[{")))
 
 (defun use-default-paragraph-delimiters ()
   (setq paragraph-start (default-value 'paragraph-start)
