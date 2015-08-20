@@ -1,4 +1,13 @@
 ;;-----------------------------------------------------------------------
+;; variables
+;;-----------------------------------------------------------------------
+
+(defvar common-editing-modes
+    (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode
+    'matlab-mode 'shell-script-mode 'js2-mode 'markdown-mode
+    'haskell-mode 'org-mode 'c-mode 'css-mode))
+
+;;-----------------------------------------------------------------------
 ;; packages
 ;;-----------------------------------------------------------------------
 
@@ -138,10 +147,7 @@
   ;; modes to activate ac-mode
   (defun setup-ac (mode)
     (add-to-list 'ac-modes mode))
-  (mapcar 'setup-ac
-          (list 'latex-mode 'lisp-mode 'python-mode 'matlab-mode
-                'shell-script-mode 'js2-mode 'markdown-mode
-                'haskell-mode 'org-mode 'c-mode 'css-mode))
+  (mapcar 'setup-ac common-editing-modes)
   ;; C-n C-p for next/previous expansion
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous)
@@ -199,7 +205,7 @@
 ;; setup
 ;;-----------------------------------------------------------------------
 
-;; variables
+;; emacs settings
 (put 'upcase-region 'disabled nil)
 (desktop-save-mode 1)
 
@@ -230,8 +236,11 @@
  '(display-time-default-load-average nil))
 (display-time)
 
-;; parens
-;; turn on highlight matching brackets when cursor is on one
+;; parens. automatically pair parens, but make it buffer local
+;; http://emacs.stackexchange.com/questions/5981/how-to-make-electric-pair-mode-buffer-local
+(defun my-inhibit-electric-pair-mode (char)
+  (not (member major-mode common-editing-modes)))
+(setq electric-pair-inhibit-predicate #'my-inhibit-electric-pair-mode)
 (electric-pair-mode 1)
 
 ;; remove trailing whitespace
@@ -564,6 +573,14 @@ This command does the inverse of `fill-region'."
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.pbs\\'" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.ext\\'" . shell-script-mode))
+
+;;-----------------------------------------------------------------------
+;; emacs lisp programming
+;;-----------------------------------------------------------------------
+
+;; include dashes in the word definition (especially useful for evil-mode
+;; superstar)
+(add-hook 'emacs-lisp-mode-hook (lambda () (modify-syntax-entry ?- "w")))
 
 ;;-----------------------------------------------------------------------
 ;; matlab programming
