@@ -4,8 +4,8 @@
 
 (defvar common-editing-modes
     (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode
-    'matlab-mode 'shell-script-mode 'js2-mode 'markdown-mode
-    'haskell-mode 'org-mode 'c-mode 'css-mode))
+    'matlab-mode 'sh-mode 'js2-mode 'markdown-mode 'haskell-mode
+    'org-mode 'c-mode 'css-mode))
 
 ;;-----------------------------------------------------------------------
 ;; packages
@@ -69,6 +69,7 @@
   (setq python-shell-interpreter "ipython")
 
   ;; web-mode
+  (require 'web-mode)
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
@@ -82,6 +83,12 @@
               (setq web-mode-css-indent-offset 2)
               (setq web-mode-code-indent-offset 4)
               (setq web-mode-indent-style 2)))
+  ;; auctex style block commands
+  (define-key web-mode-map (kbd "C-c C-e") 'web-mode-element-insert)
+  (define-key web-mode-map (kbd "C-c ]") 'web-mode-element-close)
+  (define-key web-mode-map (kbd "C-M-a") 'web-mode-element-beginning)
+  (define-key web-mode-map (kbd "C-M-e") 'web-mode-element-end)
+  (define-key web-mode-map (kbd "C-u C-c C-e") 'web-mode-element-rename)
 
   ;; browse-kill-ring
   (browse-kill-ring-default-keybindings)
@@ -120,6 +127,12 @@
 
   ;; markdown
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+  (defun run-build ()
+    (interactive)
+    (save-buffer)
+    (message "Building")
+    (shell-command "./build"))
+  (define-key markdown-mode-map (kbd "C-c C-c") 'run-build)
 
   ;; auto-complete
   (global-auto-complete-mode 1)
@@ -148,6 +161,7 @@
   (defun setup-ac (mode)
     (add-to-list 'ac-modes mode))
   (mapcar 'setup-ac common-editing-modes)
+
   ;; C-n C-p for next/previous expansion
   (define-key ac-completing-map (kbd "C-n") 'ac-next)
   (define-key ac-completing-map (kbd "C-p") 'ac-previous)
@@ -248,10 +262,10 @@
   (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
 (mapcar (lambda (hook)
           (add-hook hook 'remove-trailing-whitepace-on-save))
-        (list 'latex-mode-hook 'lisp-mode-hook 'python-mode-hook
-              'matlab-mode-hook 'shell-script-mode-hook
-              'js2-mode-hook 'markdown-mode-hook
-              'haskell-mode-hook 'c-mode-hook 'css-mode-hook))
+        (list 'LaTeX-mode-hook 'lisp-mode-hook 'python-mode-hook
+              'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
+              'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
+              'css-mode-hook))
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
@@ -570,9 +584,9 @@ This command does the inverse of `fill-region'."
 ;; shell programming
 ;;-----------------------------------------------------------------------
 
-(add-to-list 'auto-mode-alist '("\\.sh\\'" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("\\.pbs\\'" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("\\.ext\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.pbs\\'" . sh-mode))
+(add-to-list 'auto-mode-alist '("\\.ext\\'" . sh-mode))
 
 ;;-----------------------------------------------------------------------
 ;; emacs lisp programming
