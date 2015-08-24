@@ -624,7 +624,6 @@ This command does the inverse of `fill-region'."
 (require 'tex)
 ;; from the manual
 (setq TeX-parse-self t)
-(setq-default TeX-master nil)
 
 ;; modes to activate
 (add-hook 'LaTeX-mode-hook (lambda () (visual-line-mode 1)))
@@ -652,6 +651,14 @@ This command does the inverse of `fill-region'."
 (setq preview-gs-options
       (quote
        ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
+
+;;-----------------------------------------------------------------------
+;; markdown mode
+;;-----------------------------------------------------------------------
+
+;; modes to activate
+(add-hook 'markdown-mode-hook 'flyspell-mode)
+(add-hook 'markdown-mode-hook 'auto-fill-mode)
 
 ;;-----------------------------------------------------------------------
 ;; Org mode
