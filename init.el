@@ -126,6 +126,7 @@
   ;; After making the change, run C-u 0 M-x byte-compile-file deft.el
 
   ;; markdown
+  (require 'markdown-mode)
   (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
   (defun run-build ()
     (interactive)
