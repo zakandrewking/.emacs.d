@@ -28,7 +28,8 @@
                                  yasnippet sql-indent multi-term
                                  json-mode ido-ubiquitous
                                  expand-region evil-jumper
-                                 elm-mode smex org-download))
+                                 elm-mode smex org-download
+                                 matlab-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
