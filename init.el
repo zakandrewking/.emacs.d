@@ -377,7 +377,11 @@
   "Isolate Emacs kill ring from OS X system pasteboard."
   (interactive)
   (setq interprogram-cut-function nil)
-  (setq interprogram-paste-function nil))
+  (setq interprogram-paste-function nil)
+  ;; http://stackoverflow.com/questions/17127009/how-to-disable-emacs-evil-selection-auto-copies-to-clipboard
+  (defun x-select-text (text))
+  (setq x-select-enable-clipboard nil)
+  (setq x-select-enable-primary nil))
 
 ;; separate kill ring from clipboard
 (isolate-kill-ring)
