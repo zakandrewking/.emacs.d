@@ -150,15 +150,16 @@
       (requires . 1)
       (limit . 5)
       (symbol . "a")))
-  (ac-define-source my-words-in-same-mode-buffers
-    '((init . ac-update-word-index)
-      (candidates . (ac-word-candidates
-                     (lambda (buffer)
-                       (derived-mode-p (buffer-local-value 'major-mode buffer)))))
-      (requires . 3)
-      (limit . 5)))
+  ;; (ac-define-source my-words-in-same-mode-buffers
+  ;;   '((init . ac-update-word-index)
+  ;;     (candidates . (ac-word-candidates
+  ;;                    (lambda (buffer)
+  ;;                      (derived-mode-p (buffer-local-value 'major-mode buffer)))))
+  ;;     (requires . 3)
+  ;;     (limit . 5)))
   (setq-default ac-sources '(ac-source-yasnippet
-                             ac-source-my-words-in-same-mode-buffers))
+                             ac-source-words-in-buffer))
+                             ;; ac-source-my-words-in-same-mode-buffers))
   ;; modes to activate ac-mode
   (defun setup-ac (mode)
     (add-to-list 'ac-modes mode))
@@ -362,12 +363,10 @@
 ;; no blinking cursor
 (blink-cursor-mode 0)
 ;; PATH
-(getenv "PATH")
 (setenv "PATH"
         (concat
          "/usr/local/bin" ":"
-         "/usr/texbin" ":"
-
+         "/Library/TeX/texbin" ":"
          (getenv "PATH")))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
@@ -470,6 +469,20 @@
 
 (add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
 
+;; comment line
+;; (defun comment-line ()
+;;   "Comment the current line"
+;;   (interactive)
+;;   (let (beg end)
+;;     (if (use-region-p)
+;;         (progn
+;;           ;; TODO change region to whole line
+;;           (setq beg (region-beginning) end (region-end)))
+;;       (setq beg (line-beginning-position) end (line-end-position)))
+;;     (comment-region beg end)))
+;; (comment-line)
+;; (define-key org-mode-map (kbd "C-M-;") 'comment-line)
+
 ;;-----------------------------------------------------------------------
 ;; Regular expressions
 ;;-----------------------------------------------------------------------
@@ -513,6 +526,19 @@
 (defun my-other-window ()
   (interactive)
   (select-window (next-window nil 'never-minibuf nil)))
+
+;; split and switch buffers
+(defun vsplit-last-buffer ()
+  (interactive)
+  (split-window-vertically)
+  (other-window 1 nil)
+  (switch-to-next-buffer))
+
+(defun hsplit-last-buffer ()
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1 nil)
+  (switch-to-next-buffer))
 
 ;;-----------------------------------------------------------------------
 ;; text management
@@ -658,6 +684,10 @@ This command does the inverse of `fill-region'."
       (quote
        ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
 
+;; help reftex find the bib file
+(setq reftex-use-external-file-finders t)
+(setq reftex-default-bibliography '("./bib.bib"))
+
 ;;-----------------------------------------------------------------------
 ;; markdown mode
 ;;-----------------------------------------------------------------------
@@ -742,6 +772,8 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 ;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
+(define-key my-keys-minor-mode-map (kbd "C-w '") 'hsplit-last-buffer)
+(define-key my-keys-minor-mode-map (kbd "C-w \"") 'vsplit-last-buffer)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major
