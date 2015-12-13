@@ -530,15 +530,21 @@
 ;; split and switch buffers
 (defun vsplit-last-buffer ()
   (interactive)
-  (split-window-vertically)
-  (other-window 1 nil)
-  (switch-to-next-buffer))
+  (if (eq (length (window-list)) 1)
+      (progn 
+        (split-window-vertically)
+        (other-window 1 nil)
+        (switch-to-next-buffer))
+    (delete-window)))
 
 (defun hsplit-last-buffer ()
   (interactive)
-  (split-window-horizontally)
-  (other-window 1 nil)
-  (switch-to-next-buffer))
+  (if (eq (length (window-list)) 1)
+      (progn 
+        (split-window-horizontally)
+        (other-window 1 nil)
+        (switch-to-next-buffer))
+    (delete-window)))
 
 ;;-----------------------------------------------------------------------
 ;; text management
@@ -773,7 +779,9 @@ This command does the inverse of `fill-region'."
 ;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
 (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
 (define-key my-keys-minor-mode-map (kbd "C-w '") 'hsplit-last-buffer)
+(define-key my-keys-minor-mode-map (kbd "C-w C-'") 'hsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w \"") 'vsplit-last-buffer)
+(define-key my-keys-minor-mode-map (kbd "C-w C-\"") 'vsplit-last-buffer)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major
