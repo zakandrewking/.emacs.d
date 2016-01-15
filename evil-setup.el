@@ -47,7 +47,6 @@
  '(hl-line ((t (:background "gray18")))))
 
 ;; key chord
-(key-chord-mode 1)
 (defun normal-state-forward ()
   (interactive)
   (evil-normal-state)

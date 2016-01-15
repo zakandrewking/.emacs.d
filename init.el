@@ -5,7 +5,7 @@
 (defvar common-editing-modes
     (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode
     'matlab-mode 'sh-mode 'js2-mode 'markdown-mode 'haskell-mode
-    'org-mode 'c-mode 'css-mode))
+    'org-mode 'c-mode 'css-mode 'web-mode))
 
 ;;-----------------------------------------------------------------------
 ;; packages
@@ -49,6 +49,14 @@
       (when (not (package-installed-p p))
         (package-install p))))
 
+  ;; key chord
+  (key-chord-mode 1)
+  ;; quick buffer switch
+  (defun switch-to-last-buffer ()
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+  (key-chord-define-global "df" 'switch-to-last-buffer)
+
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el")
 
@@ -82,8 +90,10 @@
               (setq indent-tabs-mode nil)
               (setq web-mode-markup-indent-offset 2)
               (setq web-mode-css-indent-offset 2)
-              (setq web-mode-code-indent-offset 4)
+              (setq web-mode-code-indent-offset 2)
               (setq web-mode-indent-style 2)))
+  ;; comment style
+  (add-to-list 'web-mode-comment-formats '("javascript" . "//" )) ; TODO does this work?
   ;; auctex style block commands
   (define-key web-mode-map (kbd "C-c C-e") 'web-mode-element-insert)
   (define-key web-mode-map (kbd "C-c ]") 'web-mode-element-close)
@@ -268,7 +278,7 @@
         (list 'LaTeX-mode-hook 'lisp-mode-hook 'python-mode-hook
               'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
               'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
-              'css-mode-hook))
+              'css-mode-hook 'web-mode)) ;; TODO replace with common-editing-modes
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
