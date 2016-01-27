@@ -55,7 +55,7 @@
   (defun switch-to-last-buffer ()
     (interactive)
     (switch-to-buffer (other-buffer (current-buffer) 1)))
-  (key-chord-define-global "fd" 'switch-to-last-buffer)
+  (key-chord-define-global "hl" 'switch-to-last-buffer)
 
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el")
