@@ -273,12 +273,13 @@
 ;; remove trailing whitespace
 (defun remove-trailing-whitepace-on-save ()
   (add-hook 'before-save-hook 'delete-trailing-whitespace nil t))
-(mapcar (lambda (hook)
-          (add-hook hook 'remove-trailing-whitepace-on-save))
-        (list 'LaTeX-mode-hook 'lisp-mode-hook 'python-mode-hook
-              'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
-              'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
-              'css-mode-hook 'web-mode)) ;; TODO replace with common-editing-modes
+(mapcar
+ (lambda (hook) (add-hook hook 'remove-trailing-whitepace-on-save))
+ (list 'LaTeX-mode-hook 'lisp-mode-hook 'python-mode-hook
+       'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
+       'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
+       'css-mode-hook 'web-mode-hook) ;; TODO replace with common-editing-modes
+ )
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
