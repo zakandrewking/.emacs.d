@@ -4,6 +4,7 @@
 
 ;; vars
 (setq-default js2-strict-inconsistent-return-warning nil)
+(setq-default js2-strict-trailing-comma-warning nil)
 (setq-default js2-global-externs
               '("module" "require" "buster" "sinon" "assert" "refute"
                 "setTimeout" "clearTimeout" "setInterval" "clearInterval"
