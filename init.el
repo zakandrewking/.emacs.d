@@ -29,7 +29,7 @@
                                  json-mode ido-ubiquitous
                                  expand-region evil-jumper
                                  elm-mode smex org-download
-                                 matlab-mode))
+                                 matlab-mode edit-server))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -226,6 +226,10 @@
   ;; no menu bar (wasn't working higher up)
   (menu-bar-mode -1)
 
+  ;; edit server for Chrome
+  (when (require 'edit-server nil t)
+    (setq edit-server-new-frame nil)
+    (edit-server-start))
   )
 
 ;;-----------------------------------------------------------------------
