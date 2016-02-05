@@ -3,4 +3,4 @@
 # --
 addEvent('${1:event}', function($2) {
   $0
-});
+})

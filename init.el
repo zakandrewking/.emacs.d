@@ -282,7 +282,7 @@
  (list 'LaTeX-mode-hook 'lisp-mode-hook 'python-mode-hook
        'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
        'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
-       'css-mode-hook 'web-mode-hook) ;; TODO replace with common-editing-modes
+       'css-mode-hook 'web-mode-hook 'rst-mode-hook)
  )
 
 ;; hide autosaves in temp directory

@@ -3,4 +3,4 @@
 # --
 ${1:collection}.each(function($2) {
   $0
-});
+})
