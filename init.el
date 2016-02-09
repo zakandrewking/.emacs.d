@@ -66,6 +66,19 @@
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
   (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
+  ;; vim window movements in magit
+  (define-key magit-mode-map (kbd "C-w") 'nil)
+  (define-key magit-mode-map (kbd "C-w h") 'evil-window-left)
+  (define-key magit-mode-map (kbd "C-w l") 'evil-window-right)
+  (define-key magit-mode-map (kbd "C-w k") 'evil-window-up)
+  (define-key magit-mode-map (kbd "C-w j") 'evil-window-down)
+  (define-key magit-mode-map (kbd "C-w H") 'evil-window-move-far-left)
+  (define-key magit-mode-map (kbd "C-w L") 'evil-window-move-far-right)
+  (define-key magit-mode-map (kbd "C-w K") 'evil-window-move-very-top)
+  (define-key magit-mode-map (kbd "C-w J") 'evil-window-move-very-bottom)
+  (define-key magit-mode-map (kbd "C-w o") 'delete-other-windows)
+  (define-key magit-mode-map (kbd "C-w c") 'evil-window-delete)
+  ;; don't check when pushing
   (setq magit-push-always-verify nil)
 
   ;; smart-mode-line
