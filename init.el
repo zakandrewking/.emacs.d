@@ -26,10 +26,10 @@
                                  ess evil-surround deft
                                  markdown-mode auto-complete
                                  yasnippet sql-indent multi-term
-                                 json-mode ido-ubiquitous
-                                 expand-region evil-jumper
-                                 elm-mode smex org-download
-                                 matlab-mode edit-server))
+                                 ido-ubiquitous expand-region
+                                 evil-jumper elm-mode smex
+                                 org-download matlab-mode
+                                 edit-server))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -95,6 +95,7 @@
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
   (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
   (setq web-mode-enable-css-colorization t)
   (add-hook 'web-mode-hook
@@ -212,9 +213,6 @@
   ;; sql-indent
   (eval-after-load "sql"
     (load-library "sql-indent"))
-
-  ;; json-mode
-  (add-to-list 'auto-mode-alist '("\\.json\\'" . json-mode))
 
   ;; ido for easy buffer switching
   (require 'ido)
