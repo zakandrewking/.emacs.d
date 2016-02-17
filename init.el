@@ -29,7 +29,7 @@
                                  ido-ubiquitous expand-region
                                  evil-jumper elm-mode smex
                                  org-download matlab-mode
-                                 edit-server))
+                                 edit-server fill-column-indicator))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -241,6 +241,22 @@
   (when (require 'edit-server nil t)
     (setq edit-server-new-frame nil)
     (edit-server-start))
+
+  ;; fill column. Turn off fci with auto-complete to avoid odd display bugs
+  ;; https://github.com/alpaker/Fill-Column-Indicator/issues/21
+  (defvar sanityinc/fci-mode-suppressed nil)
+  (defadvice popup-create (before suppress-fci-mode activate)
+    "Suspend fci-mode while popups are visible"
+    (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
+    (when fci-mode
+      (turn-off-fci-mode)))
+  (defadvice popup-delete (after restore-fci-mode activate)
+    "Restore fci-mode when all popups have closed"
+    (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
+      (setq sanityinc/fci-mode-suppressed nil)
+      (turn-on-fci-mode)))
+  ;; (fci-mode 1) ;; don't activate because of annoying fringe indicators on
+  ;; narrow windows
   )
 
 ;;-----------------------------------------------------------------------
