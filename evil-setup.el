@@ -10,8 +10,7 @@
 ;; find tags
 (defun my-jump-to-tag ()
   (interactive)
-  (evil-execute-in-emacs-state)
-  (call-interactively (key-binding (kbd "M-."))))
+  (call-interactively (key-binding (kbd "g C-]"))))
 (define-key evil-normal-state-map (kbd "C-]") 'my-jump-to-tag)
 
 ;; space to enter one character

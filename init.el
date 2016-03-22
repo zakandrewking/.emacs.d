@@ -29,7 +29,9 @@
                                  ido-ubiquitous expand-region
                                  evil-jumper elm-mode smex
                                  org-download matlab-mode
-                                 edit-server fill-column-indicator))
+                                 edit-server json-mode
+                                 fill-column-indicator
+                                 gams-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
