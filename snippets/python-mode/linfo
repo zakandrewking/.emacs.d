@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: log_info
+# key: linfo
+# --
+logging.info('$1')
+$0

@@ -95,7 +95,6 @@
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
   (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
   (setq web-mode-enable-css-colorization t)
   (add-hook 'web-mode-hook
@@ -244,17 +243,17 @@
 
   ;; fill column. Turn off fci with auto-complete to avoid odd display bugs
   ;; https://github.com/alpaker/Fill-Column-Indicator/issues/21
-  (defvar sanityinc/fci-mode-suppressed nil)
-  (defadvice popup-create (before suppress-fci-mode activate)
-    "Suspend fci-mode while popups are visible"
-    (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
-    (when fci-mode
-      (turn-off-fci-mode)))
-  (defadvice popup-delete (after restore-fci-mode activate)
-    "Restore fci-mode when all popups have closed"
-    (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
-      (setq sanityinc/fci-mode-suppressed nil)
-      (turn-on-fci-mode)))
+  ;; (defvar sanityinc/fci-mode-suppressed nil)
+  ;; (defadvice popup-create (before suppress-fci-mode activate)
+  ;;   "Suspend fci-mode while popups are visible"
+  ;;   (set (make-local-variable 'sanityinc/fci-mode-suppressed) fci-mode)
+  ;;   (when fci-mode
+  ;;     (turn-off-fci-mode)))
+  ;; (defadvice popup-delete (after restore-fci-mode activate)
+  ;;   "Restore fci-mode when all popups have closed"
+  ;;   (when (and (not popup-instances) sanityinc/fci-mode-suppressed)
+  ;;     (setq sanityinc/fci-mode-suppressed nil)
+  ;;     (turn-on-fci-mode)))
   ;; (fci-mode 1) ;; don't activate because of annoying fringe indicators on
   ;; narrow windows
   )
