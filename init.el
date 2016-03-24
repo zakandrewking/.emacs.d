@@ -5,7 +5,7 @@
 (defvar common-editing-modes
     (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode
     'matlab-mode 'sh-mode 'js2-mode 'markdown-mode 'haskell-mode
-    'org-mode 'c-mode 'css-mode 'web-mode))
+    'org-mode 'c-mode 'css-mode 'web-mode 'typescript-mode))
 
 ;;-----------------------------------------------------------------------
 ;; packages
@@ -30,8 +30,8 @@
                                  evil-jumper elm-mode smex
                                  org-download matlab-mode
                                  edit-server json-mode
-                                 fill-column-indicator
-                                 gams-mode))
+                                 fill-column-indicator gams-mode
+                                 typescript-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -258,6 +258,9 @@
   ;;     (turn-on-fci-mode)))
   ;; (fci-mode 1) ;; don't activate because of annoying fringe indicators on
   ;; narrow windows
+
+  ;; typescript-mode
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
   )
 
 ;;-----------------------------------------------------------------------
@@ -310,8 +313,8 @@
  (list 'LaTeX-mode-hook 'lisp-mode-hook 'python-mode-hook
        'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
        'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
-       'css-mode-hook 'web-mode-hook 'rst-mode-hook)
- )
+       'css-mode-hook 'web-mode-hook 'rst-mode-hook
+       'typescript-mode-hook) )
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
