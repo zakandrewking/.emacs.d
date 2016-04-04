@@ -31,7 +31,7 @@
                                  org-download matlab-mode
                                  edit-server json-mode
                                  fill-column-indicator gams-mode
-                                 typescript-mode))
+                                 typescript-mode csv-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -131,7 +131,7 @@
   ;; (setq sr-speedbar-width-x 50)
 
   ;; deft-mode
-  (setq deft-directory "~/Dropbox (Personal)/PlainText/")
+  (setq deft-directory "~/Dropbox (Personal)/notes/")
   (setq deft-extension "txt")
   (setq deft-text-mode 'org-mode)
   (setq deft-use-filename-as-title t)
