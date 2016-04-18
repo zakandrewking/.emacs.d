@@ -285,6 +285,7 @@
 (line-number-mode t)
 (global-hl-line-mode 0) ; line highlight color
 (setq recentf-save-file "~/.emacs.d/recentf")
+(set-default 'truncate-lines t)
 
 ;; start emacsserver
 (server-start)
@@ -318,7 +319,7 @@
        'matlab-mode-hook 'sh-mode-hook 'js2-mode-hook
        'markdown-mode-hook 'haskell-mode-hook 'c-mode-hook
        'css-mode-hook 'web-mode-hook 'rst-mode-hook
-       'typescript-mode-hook) )
+       'typescript-mode-hook 'emacs-lisp-mode-hook))
 
 ;; hide autosaves in temp directory
 (setq backup-directory-alist
@@ -581,7 +582,7 @@
 (defun vsplit-last-buffer ()
   (interactive)
   (if (eq (length (window-list)) 1)
-      (progn 
+      (progn
         (split-window-vertically)
         (other-window 1 nil)
         (switch-to-next-buffer))
@@ -590,7 +591,7 @@
 (defun hsplit-last-buffer ()
   (interactive)
   (if (eq (length (window-list)) 1)
-      (progn 
+      (progn
         (split-window-horizontally)
         (other-window 1 nil)
         (switch-to-next-buffer))
@@ -671,14 +672,14 @@ This command does the inverse of `fill-region'."
 ;; insert the name of a local file
 (defun insert-file-name (filename &optional args)
   "Insert name of file FILENAME into buffer after point.
-  
+
   Prefixed with \\[universal-argument], expand the file name to
   its fully canocalized path.  See `expand-file-name'.
-  
+
   Prefixed with \\[negative-argument], use relative path to file
   name from current directory, `default-directory'.  See
   `file-relative-name'.
-  
+
   The default with no prefix is to insert the file name exactly as
   it appears in the minibuffer prompt."
   ;; Based on insert-file in Emacs -- ashawley 20080926
