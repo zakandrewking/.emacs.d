@@ -261,6 +261,10 @@
 
   ;; typescript-mode
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
+
+  ;; csv mode
+  (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
+  (add-to-list 'auto-mode-alist '("\\.csv\\'" . csv-mode))
   )
 
 ;;-----------------------------------------------------------------------
@@ -804,6 +808,85 @@ This command does the inverse of `fill-region'."
   (interactive)
   (let ((current-prefix-arg '(4)))
     (call-interactively 'org-toggle-checkbox)))
+
+;; beamer export
+(require 'ox-latex)
+(add-to-list 'org-latex-classes
+             '("beamer" "\\documentclass[compress]{beamer}
+
+\\newcounter{slidenumber}
+\\setbeamertemplate{footline}[text line]{
+  \\parbox{\\linewidth}{
+    \\hspace*{-25pt}
+    \\includegraphics[width=3cm]{sbrg_logo.pdf}
+    \\hfill
+    \\vspace*{8pt}
+    \\setcounter{slidenumber}{\\insertpagenumber}
+    \\addtocounter{slidenumber}{-\\insertframestartpage}
+    \\addtocounter{slidenumber}{1}
+    \\insertframenumber{} / \\inserttotalframenumber}}
+\\setbeamertemplate{navigation symbols}{}
+
+\\usepackage{palatino}
+\\usepackage{raleway}
+
+\\usefonttheme[stillsansseriftext]{serif}
+\\usecolortheme[RGB={13,88,153}]{structure}
+\\setbeamerfont{title}{size=\\huge}
+
+\\defbeamertemplate*{title page}{customized}[1][]
+{
+  \\centering
+  \\vspace{2cm}
+  \\usebeamerfont{title}\\inserttitle\\par
+  \\usebeamerfont{subtitle}\\usebeamercolor[fg]{subtitle}\\insertsubtitle\\par
+  \\vspace{1.5cm}
+  \\usebeamerfont{author}\\insertauthor\\par
+  \\vspace{0.5cm}
+  \\usebeamerfont{date}\\insertdate\\par
+}
+
+\\usepackage{natbib}
+\\bibliographystyle{apalike}
+\\setbeamertemplate{bibliography item}{}
+\\renewcommand\\bibfont{\\scriptsize}
+
+% for tabular
+\\usepackage{booktabs}
+
+% fixltx2e package for \\textsubscript
+\\usepackage{fixltx2e}
+
+% for code
+\\usepackage{listings}
+\\usepackage{color}
+\\definecolor{mygreen}{rgb}{0,0.6,0}
+\\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\\lstset{
+  basicstyle=\\scriptsize,
+  commentstyle=\\color{mygreen},    % comment style
+  keywordstyle=\\color{blue},       % keyword style
+  stringstyle=\\color{mymauve}     % string literal style
+}
+
+% align images
+\\usepackage[export]{adjustbox}
+
+% To change margin on one slide only
+\\newenvironment{changemargin}[2]{%
+  \\begin{list}{}{%
+      \\setlength{\\topsep}{0pt}%
+      \\setlength{\\leftmargin}{#1}%
+      \\setlength{\\rightmargin}{#2}%
+      \\setlength{\\listparindent}{\\parindent}%
+      \\setlength{\\itemindent}{\\parindent}%
+      \\setlength{\\parsep}{\\parskip}%
+    }%
+  \\item[]}{\\end{list}}"
+  ("\\section{%s}" . "\\section*{%s}")
+  ("\\subsection{%s}" . "\\subsection*{%s}")
+  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
 ;; keyboard shortcuts
 (define-key org-mode-map (kbd "C-c 9") 'org-cycle)
