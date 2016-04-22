@@ -259,12 +259,36 @@
   ;; (fci-mode 1) ;; don't activate because of annoying fringe indicators on
   ;; narrow windows
 
+  ;; gams-mode
+  (add-to-list 'auto-mode-alist '("\\.ga?ms\\'" . gams-mode))
+
   ;; typescript-mode
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
   ;; csv mode
   (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))
   (add-to-list 'auto-mode-alist '("\\.csv\\'" . csv-mode))
+
+  ;; set separators based on file extension
+  (make-variable-buffer-local 'csv-separators)
+  (make-variable-buffer-local 'csv-separator-chars)
+  (make-variable-buffer-local 'csv--skip-regexp)
+  (make-variable-buffer-local 'csv-separator-regexp)
+  (make-variable-buffer-local 'csv-font-lock-keywords)
+  (defun set-csv-separators () 
+    (let ((ext (file-name-extension (buffer-file-name))))
+      (if (or (equal ext "tsv") (equal ext "txt"))
+          (setq csv-separators '("	"))
+        (setq csv-separators '(","))
+        )
+      ;; this is straight from csv-mode.el 
+      (setq csv-separator-chars (mapcar 'string-to-char csv-separators)
+            csv--skip-regexp (apply 'concat "^\n" csv-separators)
+            csv-separator-regexp (apply 'concat `("[" ,@csv-separators "]"))
+            csv-font-lock-keywords
+            `((,csv-separator-regexp (0 'csv-separator-face))))
+      ))
+  (add-hook 'csv-mode-hook 'set-csv-separators)
   )
 
 ;;-----------------------------------------------------------------------
@@ -338,7 +362,7 @@
 ;; remake the scratch buffer
 ;; http://stackoverflow.com/questions/234963/re-open-scratch-buffer-in-emacs
 (setq initial-scratch-message "")
-(run-with-idle-timer 60 t '(lambda () (get-buffer-create "*scratch*")))
+(run-with-idle-timer 60 t (lambda () (get-buffer-create "*scratch*")))
 
 ;; color shell command outputs
 ;;
@@ -362,12 +386,12 @@
 ;; (unless window-system ;; emacs daemon runs both terminal and gui emacs
 (require 'mouse)
 (xterm-mouse-mode t)
-(global-set-key [mouse-4] '(lambda ()
-                             (interactive)
-                             (scroll-down 1)))
-(global-set-key [mouse-5] '(lambda ()
-                             (interactive)
-                             (scroll-up 1)))
+(global-set-key [mouse-4] (lambda ()
+                            (interactive)
+                            (scroll-down 1)))
+(global-set-key [mouse-5] (lambda ()
+                            (interactive)
+                            (scroll-up 1)))
 (defun track-mouse (e))
 (setq mouse-sel-mode t)
 ;; )
