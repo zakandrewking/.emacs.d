@@ -135,9 +135,16 @@
   (setq deft-extension "txt")
   (setq deft-text-mode 'org-mode)
   (setq deft-use-filename-as-title t)
+  (setq deft-use-filter-string-for-filename t)
   (put 'erase-buffer 'disabled nil)
   (put 'toggle-mac-option-modifier 'disabled t)
   (add-hook 'org-mode-hook 'auto-fill-mode)
+  (defun deft-enter-insert-mode ()
+    ;; delay seems necessary
+    (run-at-time "0.1 sec" nil 'evil-insert-state))
+  (add-hook 'deft-mode-hook 'deft-enter-insert-mode)
+  ;; fix TAB
+  (define-key deft-mode-map (kbd "TAB") 'widget-forward)
   ;; This fix may be necessary so deft width doesn't stretch too far:
   ;; https://github.com/timvisher/deft/issues/1
   ;;
@@ -275,18 +282,20 @@
   (make-variable-buffer-local 'csv--skip-regexp)
   (make-variable-buffer-local 'csv-separator-regexp)
   (make-variable-buffer-local 'csv-font-lock-keywords)
-  (defun set-csv-separators () 
+  (defun set-csv-separators ()
     (let ((ext (file-name-extension (buffer-file-name))))
       (if (or (equal ext "tsv") (equal ext "txt"))
           (setq csv-separators '("	"))
         (setq csv-separators '(","))
         )
-      ;; this is straight from csv-mode.el 
+      ;; this is straight from csv-mode.el
       (setq csv-separator-chars (mapcar 'string-to-char csv-separators)
             csv--skip-regexp (apply 'concat "^\n" csv-separators)
             csv-separator-regexp (apply 'concat `("[" ,@csv-separators "]"))
             csv-font-lock-keywords
             `((,csv-separator-regexp (0 'csv-separator-face))))
+      ;; disable minor modes for speed
+      (font-lock-mode -1)
       ))
   (add-hook 'csv-mode-hook 'set-csv-separators)
   )
