@@ -27,11 +27,11 @@
                                  markdown-mode auto-complete
                                  yasnippet sql-indent multi-term
                                  ido-ubiquitous expand-region
-                                 evil-jumper elm-mode smex
-                                 org-download matlab-mode
-                                 edit-server json-mode
-                                 fill-column-indicator gams-mode
-                                 typescript-mode csv-mode))
+                                 elm-mode smex org-download
+                                 matlab-mode edit-server
+                                 json-mode fill-column-indicator
+                                 gams-mode typescript-mode
+                                 csv-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -131,6 +131,7 @@
   ;; (setq sr-speedbar-width-x 50)
 
   ;; deft-mode
+  (require 'deft)
   (setq deft-directory "~/Dropbox (Personal)/notes/")
   (setq deft-extension "txt")
   (setq deft-text-mode 'org-mode)

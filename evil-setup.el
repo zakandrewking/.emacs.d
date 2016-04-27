@@ -1,6 +1,5 @@
 ;; set up evil mode to work nicely
 (evil-mode 1)
-(evil-jumper-mode 1)
 (setq evil-want-fine-undo t)
 
 ;; TODO try space as leader key
@@ -31,7 +30,7 @@
 
 ;; visual line mode keys
 (add-hook 'visual-line-mode-hook
-          (lambda () 
+          (lambda ()
             (define-key evil-normal-state-map (kbd "j") 'next-line)
             (define-key evil-normal-state-map (kbd "k") 'previous-line)))
 
@@ -39,7 +38,7 @@
 (add-hook 'evil-insert-state-entry-hook
           (lambda () (hl-line-mode t)))
 (add-hook 'evil-insert-state-exit-hook
-          (lambda () 
+          (lambda ()
             (let ((current-prefix-arg '(0)))
               (call-interactively 'hl-line-mode))))
 (custom-set-faces
@@ -112,7 +111,7 @@
 
 ;; doesn't work:
 ;; (defun add-other-hjkl-bindings (keymap state)
-;;   (evil-define-key state keymap 
+;;   (evil-define-key state keymap
 ;;      "C-w h" (lookup-key evil-motion-state-map "C-w h")
 ;;      "C-w j" (lookup-key evil-motion-state-map "C-w j")
 ;;      "C-w k" (lookup-key evil-motion-state-map "C-w k")
