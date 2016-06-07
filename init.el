@@ -31,7 +31,8 @@
                                  matlab-mode edit-server
                                  json-mode fill-column-indicator
                                  gams-mode typescript-mode
-                                 csv-mode ac-etags))
+                                 csv-mode ac-etags
+                                 dockerfile-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
