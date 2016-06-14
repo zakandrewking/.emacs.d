@@ -1,3 +1,6 @@
+(add-to-list 'load-path "~/.emacs.d/js2-patch/")
+(require 'js2-mode)
+
 ;; js2-mode setup
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . javascript-mode))
