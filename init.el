@@ -20,7 +20,7 @@
 
   (defvar required-packages ()
     "a list of packages to ensure are installed at launch.")
-  (setq required-packages '(evil magit deft key-chord js2-mode
+  (setq required-packages '(evil magit deft key-chord
                                  browse-kill-ring yaml-mode ag
                                  smart-mode-line web-mode auctex
                                  ess evil-surround deft
@@ -31,8 +31,12 @@
                                  matlab-mode edit-server
                                  json-mode fill-column-indicator
                                  gams-mode typescript-mode
+<<<<<<< Updated upstream
                                  csv-mode ac-etags
                                  dockerfile-mode))
+=======
+                                 csv-mode company company-ycmd))
+>>>>>>> Stashed changes
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -65,6 +69,14 @@
 
   ;; js2-mode setup
   (load "~/.emacs.d/js2-setup.el")
+
+  ;; company-mode setup
+  (load "~/.emacs.d/company-setup.el")
+  ;; modes to activate ac-mode
+  (defun setup-co (mode)
+    (add-hook mode 'company-mode)
+    (add-hook mode 'ycmd-mode))
+  (mapcar 'setup-co common-editing-modes)
 
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
@@ -170,53 +182,53 @@
     (shell-command "./build"))
   (define-key markdown-mode-map (kbd "C-c C-c") 'run-build)
 
-  ;; auto-complete
-  (global-auto-complete-mode 1)
-  ;; sources and faces
-  (defun ac-yasnippet-candidates ()
-    (if (null ac-prefix)
-        (yas-active-keys)
-      (all-completions ac-prefix (yas-active-keys))))
-  (ac-define-source yasnippet
-    '((depends yasnippet)
-      (candidates . ac-yasnippet-candidates)
-      (action . yas/expand)
-      (requires . 1)
-      (limit . 5)
-      (symbol . "a")))
-  ;; (ac-define-source my-words-in-same-mode-buffers
-  ;;   '((init . ac-update-word-index)
-  ;;     (candidates . (ac-word-candidates
-  ;;                    (lambda (buffer)
-  ;;                      (derived-mode-p (buffer-local-value 'major-mode buffer)))))
-  ;;     (requires . 3)
-  ;;     (limit . 5)))
-  (ac-etags-setup)
-  (custom-set-faces
-   '(ac-etags-candidate-face ((t (:inherit ac-candidate-face))))
-   '(ac-etags-selection-face ((t (:inherit ac-selection-face)))))
-  (setq-default ac-sources '(ac-source-yasnippet
-                             ac-source-words-in-buffer
-                             ac-source-etags))
-                             ;; ac-source-my-words-in-same-mode-buffers))
-  ;; modes to activate ac-mode
-  (defun setup-ac (mode)
-    (add-to-list 'ac-modes mode))
-  (mapcar 'setup-ac common-editing-modes)
+  ;; ;; auto-complete
+  ;; (global-auto-complete-mode 1)
+  ;; ;; sources and faces
+  ;; (defun ac-yasnippet-candidates ()
+  ;;   (if (null ac-prefix)
+  ;;       (yas-active-keys)
+  ;;     (all-completions ac-prefix (yas-active-keys))))
+  ;; (ac-define-source yasnippet
+  ;;   '((depends yasnippet)
+  ;;     (candidates . ac-yasnippet-candidates)
+  ;;     (action . yas/expand)
+  ;;     (requires . 1)
+  ;;     (limit . 5)
+  ;;     (symbol . "a")))
+  ;; ;; (ac-define-source my-words-in-same-mode-buffers
+  ;; ;;   '((init . ac-update-word-index)
+  ;; ;;     (candidates . (ac-word-candidates
+  ;; ;;                    (lambda (buffer)
+  ;; ;;                      (derived-mode-p (buffer-local-value 'major-mode buffer)))))
+  ;; ;;     (requires . 3)
+  ;; ;;     (limit . 5)))
+  ;; (ac-etags-setup)
+  ;; (custom-set-faces
+  ;;  '(ac-etags-candidate-face ((t (:inherit ac-candidate-face))))
+  ;;  '(ac-etags-selection-face ((t (:inherit ac-selection-face)))))
+  ;; (setq-default ac-sources '(ac-source-yasnippet
+  ;;                            ac-source-words-in-buffer
+  ;;                            ac-source-etags))
+  ;;                            ;; ac-source-my-words-in-same-mode-buffers))
+  ;; ;; modes to activate ac-mode
+  ;; (defun setup-ac (mode)
+  ;;   (add-to-list 'ac-modes mode))
+  ;; (mapcar 'setup-ac common-editing-modes)
 
-  ;; C-n C-p for next/previous expansion
-  (define-key ac-completing-map (kbd "C-n") 'ac-next)
-  (define-key ac-completing-map (kbd "C-p") 'ac-previous)
-  ;; don't choose next candidate with tab
-  (define-key ac-complete-mode-map (kbd "TAB") 'ac-expand-common)
-  ;; show immediately, with fewer options and only after 4 chars
-  (setq ac-auto-show-menu 0.0)
-  (setq ac-delay 0.0)
-  (setq ac-candidate-menu-min 0)
-  ;; (setq ac-auto-start 4) ;; redundant
-  ;; (setq ac-candidate-limit 5)
-  ;; enable ac even in strings, comments, and docs
-  (setq ac-disable-faces nil)
+  ;; ;; C-n C-p for next/previous expansion
+  ;; (define-key ac-completing-map (kbd "C-n") 'ac-next)
+  ;; (define-key ac-completing-map (kbd "C-p") 'ac-previous)
+  ;; ;; don't choose next candidate with tab
+  ;; (define-key ac-complete-mode-map (kbd "TAB") 'ac-expand-common)
+  ;; ;; show immediately, with fewer options and only after 4 chars
+  ;; (setq ac-auto-show-menu 0.0)
+  ;; (setq ac-delay 0.0)
+  ;; (setq ac-candidate-menu-min 0)
+  ;; ;; (setq ac-auto-start 4) ;; redundant
+  ;; ;; (setq ac-candidate-limit 5)
+  ;; ;; enable ac even in strings, comments, and docs
+  ;; (setq ac-disable-faces nil)
 
   ;; yasnippet
   (yas-global-mode 1)
