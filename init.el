@@ -32,7 +32,7 @@
                                  json-mode fill-column-indicator
                                  gams-mode typescript-mode
                                  csv-mode ac-etags
-                                 dockerfile-mode))
+                                 dockerfile-mode evil-numbers))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()

@@ -121,3 +121,7 @@
 (require 'expand-region)
 (define-key evil-normal-state-map (kbd "+") 'er/expand-region)
 ;; - to contract region, 0 to reset
+
+;; evil-numbers, C-a and C-x in Vim
+(define-key evil-normal-state-map (kbd "C-c =") 'evil-numbers/inc-at-pt)
+(define-key evil-normal-state-map (kbd "C-c -") 'evil-numbers/dec-at-pt)
