@@ -1,6 +1,3 @@
-(add-to-list 'load-path "~/.emacs.d/js2-patch/")
-(require 'js2-mode)
-
 ;; js2-mode setup
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . javascript-mode))
@@ -15,6 +12,7 @@
                 "location" "__dirname" "console" "JSON"))
 ;; when breaking strings, put `+' on the first line
 (setq-default js2-concat-multiline-strings 'eol)
+(setq-default j2-basic-offset 2)
 
 ;; js2-newline with return
 (eval-after-load 'js2-mode

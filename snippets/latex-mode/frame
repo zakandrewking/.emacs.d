@@ -2,7 +2,7 @@
 # name: frame
 # key: fr
 # --
-\begin{frame}${1:[$2]}
-        ${3:\frametitle{$4}}
-        $0
+\begin{frame}
+    ${1:\frametitle{$2}}
+    $0
 \end{frame}
