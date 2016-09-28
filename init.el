@@ -974,6 +974,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-w C-'") 'hsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w \"") 'vsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w C-\"") 'vsplit-last-buffer)
+(define-key my-keys-minor-mode-map (kbd "C-w C-k") 'ido-kill-buffer)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major
