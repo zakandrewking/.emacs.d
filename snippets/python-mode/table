@@ -4,5 +4,5 @@
 # --
 class ${1:}(Base):
     __tablename__ = '${1:$(let* ((case-fold-search nil)) (downcase (replace-regexp-in-string "\\\\(.\\\\)\\\\([A-Z]\\\\)" "\\\\1_\\\\2" yas-text)))}'
-    id = Column(Integer, Sequence('wids'), primary_key=True)
+    id = Column(Integer, primary_key=True)
     $0

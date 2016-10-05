@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: ipython
+# key: ipy
+# group: debug
+# --
+from IPython import embed; embed()
