@@ -12,7 +12,7 @@
                 "location" "__dirname" "console" "JSON"))
 ;; when breaking strings, put `+' on the first line
 (setq-default js2-concat-multiline-strings 'eol)
-(setq-default j2-basic-offset 2)
+(setq-default js-indent-level 2)
 
 ;; js2-newline with return
 (eval-after-load 'js2-mode

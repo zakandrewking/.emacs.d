@@ -1,4 +1,4 @@
-;;-----------------------------------------------------------------------
+;-----------------------------------------------------------------------
 ;; variables
 ;;-----------------------------------------------------------------------
 
@@ -251,6 +251,7 @@
 
   ;; no menu bar (wasn't working higher up)
   (menu-bar-mode -1)
+  (fringe-mode -1)
 
   ;; edit server for Chrome
   (when (require 'edit-server nil t)
@@ -438,7 +439,6 @@
   (interactive)
   (pt-pbcopy)
   (delete-region (region-beginning) (region-end)))
-
 ;; GUI Emacs
 ;; (when window-system ;; run this code when the emacs daemon starts too
 ;; don't use Mac OSX full screen
@@ -446,6 +446,7 @@
 ;; font
 (set-face-attribute 'default nil :family "Inconsolata"
                     :height 170 :weight 'normal)
+
 ;; turn off toolbar and scrollbar
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -801,7 +802,8 @@ This command does the inverse of `fill-region'."
 ;; previews with preview-latex and ghostscript
 (setq preview-gs-options
       (quote
-       ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
+       ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4"
+        "-dGraphicsAlphaBits=4")))
 
 ;; help reftex find the bib file
 (setq reftex-use-external-file-finders t)
@@ -975,6 +977,9 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "C-w \"") 'vsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w C-\"") 'vsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w C-k") 'ido-kill-buffer)
+(define-key my-keys-minor-mode-map (kbd "s-=") 'text-scale-increase)
+(define-key my-keys-minor-mode-map (kbd "s--") 'text-scale-decrease)
+(define-key my-keys-minor-mode-map (kbd "s-0") 'text-scale-adjust)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major
