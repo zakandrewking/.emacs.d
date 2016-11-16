@@ -32,7 +32,7 @@
                                  json-mode fill-column-indicator
                                  gams-mode typescript-mode
                                  csv-mode ac-etags
-                                 dockerfile-mode evil-numbers))
+                                 dockerfile-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -147,6 +147,8 @@
   (add-hook 'deft-mode-hook 'deft-enter-insert-mode)
   ;; fix TAB
   (define-key deft-mode-map (kbd "TAB") 'widget-forward)
+  (define-key deft-mode-map (kbd "C-<return>") 'deft-new-file)
+  (define-key deft-mode-map (kbd "C-M-<return>") 'deft-new-file-named)
   ;; This fix may be necessary so deft width doesn't stretch too far:
   ;; https://github.com/timvisher/deft/issues/1
   ;;
