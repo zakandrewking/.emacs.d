@@ -330,6 +330,9 @@
 (setq recentf-save-file "~/.emacs.d/recentf")
 (set-default 'truncate-lines t)
 
+;; never pop up new frames
+(setq ns-pop-up-frames nil)
+
 ;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; two lines at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
