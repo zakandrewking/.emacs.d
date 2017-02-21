@@ -30,9 +30,8 @@
                                  elm-mode smex org-download
                                  matlab-mode edit-server
                                  json-mode fill-column-indicator
-                                 gams-mode typescript-mode
-                                 csv-mode ac-etags
-                                 dockerfile-mode))
+                                 gams-mode tide csv-mode ac-etags
+                                 dockerfile-mode company))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -66,6 +65,9 @@
   ;; js2-mode setup
   (load "~/.emacs.d/js2-setup.el")
 
+  ;; tide setup
+  (load "~/.emacs.d/tide-setup.el")
+
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
   (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
@@ -98,6 +100,7 @@
   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
   (setq web-mode-enable-css-colorization t)
   (add-hook 'web-mode-hook
