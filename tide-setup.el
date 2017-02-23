@@ -1,3 +1,12 @@
+;; company options. pull these out into a generic script
+(setq company-idle-delay 0.0)
+(setq company-minimum-prefix-length 1)
+;; TODO begin completion on tab with empty space
+;; TODO company fall back on ddabrev
+;; TODO python eldoc
+;; TODO function docs in tide/company. docs for console.log?
+;; TODO C-] jump to definition with tide
+
 (setq-default typescript-indent-level 2)
 
 (defun setup-tide-mode ()
@@ -26,3 +35,13 @@
           (lambda ()
             (when (string-equal "tsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
+
+;; jedi
+;; ----
+;; jedi:install-server
+;; (defun my/python-mode-hook ()
+;;   (add-to-list 'company-backends 'company-jedi))
+;;
+;; (add-hook 'python-mode-hook 'my/python-mode-hook)
+;;
+;; jedi is still so slow!!!!
