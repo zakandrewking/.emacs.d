@@ -119,6 +119,11 @@
   (define-key web-mode-map (kbd "C-M-a") 'web-mode-element-beginning)
   (define-key web-mode-map (kbd "C-M-e") 'web-mode-element-end)
   (define-key web-mode-map (kbd "C-u C-c C-e") 'web-mode-element-rename)
+  ;; default paragraph definition for auctex
+  (defun use-default-paragraph-delimiters ()
+    (setq paragraph-start (default-value 'paragraph-start)
+          paragraph-separate (default-value 'paragraph-separate)))
+  (add-hook 'tex-mode-hook 'use-default-paragraph-delimiters)
 
   ;; browse-kill-ring
   (browse-kill-ring-default-keybindings)

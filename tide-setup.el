@@ -21,10 +21,15 @@
   ;; `M-x package-install [ret] company`
   (company-mode +1)
   (auto-complete-mode -1)
-  (fringe-mode))
+  (fringe-mode)
+  (setq tide-tsserver-executable "node_modules/typescript/bin/tsserver")
+  (define-key tide-mode-map (kbd "M-d") 'tide-documentation-at-point)
+  (define-key tide-mode-map (kbd "M-]") 'tide-jump-to-definition)
+  (define-key tide-mode-map (kbd "M-[") 'tide-jump-back)
+  (define-key tide-mode-map (kbd "<tab>") 'company-complete))
 
 ;; aligns annotation to the right hand side
-;; (setq company-tooltip-align-annotations t)
+(setq company-tooltip-align-annotations t)
 
 ;; formats the buffer before saving
 ;; (add-hook 'before-save-hook 'tide-format-before-save)
