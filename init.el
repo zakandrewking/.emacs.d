@@ -207,7 +207,8 @@
    '(ac-etags-selection-face ((t (:inherit ac-selection-face)))))
   (setq-default ac-sources '(ac-source-yasnippet
                              ac-source-words-in-buffer
-                             ac-source-etags))
+                             ;; ac-source-etags
+                             ))
                              ;; ac-source-my-words-in-same-mode-buffers))
   ;; modes to activate ac-mode
   (defun setup-ac (mode)
