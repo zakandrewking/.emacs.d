@@ -62,11 +62,11 @@
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el")
 
-  ;; js2-mode setup
-  (load "~/.emacs.d/js2-setup.el")
+  ;; JavaScript setup
+  (load "~/.emacs.d/javascript-setup.el")
 
-  ;; tide setup
-  (load "~/.emacs.d/tide-setup.el")
+  ;; TypeScript & tide setup
+  (load "~/.emacs.d/typescript-setup.el")
 
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
@@ -286,9 +286,6 @@
 
   ;; gams-mode
   (add-to-list 'auto-mode-alist '("\\.ga?ms\\'" . gams-mode))
-
-  ;; typescript-mode
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
   ;; csv mode
   (add-to-list 'auto-mode-alist '("\\.tsv\\'" . csv-mode))

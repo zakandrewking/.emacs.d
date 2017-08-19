@@ -1,6 +1,12 @@
 ;; js2-mode setup
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
 (add-to-list 'auto-mode-alist '("\\.json\\'" . javascript-mode))
+
+(add-hook 'js2-mode-hook (lambda ()
+                           (flycheck-mode 1)
+                           ;; support only standardjs right now
+                           (setq flycheck-checker 'javascript-standard)))
 
 ;; vars
 (setq-default js2-strict-inconsistent-return-warning nil)
