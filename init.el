@@ -996,6 +996,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "s-=") 'text-scale-increase)
 (define-key my-keys-minor-mode-map (kbd "s--") 'text-scale-decrease)
 (define-key my-keys-minor-mode-map (kbd "s-0") 'text-scale-adjust)
+(define-key my-keys-minor-mode-map (kbd "s-/") 'comment-dwim)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major
