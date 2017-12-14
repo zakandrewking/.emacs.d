@@ -3,9 +3,9 @@
 ;;-----------------------------------------------------------------------
 
 (defvar common-editing-modes
-    (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode
-    'matlab-mode 'sh-mode 'js2-mode 'markdown-mode 'haskell-mode
-    'org-mode 'c-mode 'css-mode 'web-mode 'typescript-mode))
+    (list 'latex-mode 'lisp-mode 'emacs-lisp-mode 'python-mode 'matlab-mode
+    'sh-mode 'js2-mode 'markdown-mode 'haskell-mode 'org-mode 'c-mode 'css-mode
+    'web-mode 'typescript-mode 'plantuml-mode))
 
 ;;-----------------------------------------------------------------------
 ;; packages
@@ -28,7 +28,7 @@
                                  org-download matlab-mode edit-server json-mode
                                  fill-column-indicator gams-mode tide csv-mode
                                  ac-etags dockerfile-mode company
-                                 evil-vimish-fold))
+                                 evil-vimish-fold plantuml-mode))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -311,6 +311,15 @@
       (font-lock-mode -1)
       ))
   (add-hook 'csv-mode-hook 'set-csv-separators)
+
+  ;; plantuml-mode
+  (defun my-plantuml-preview ()
+    "Preview plantuml in a new pane"
+    (interactive)
+    (save-buffer)
+    (plantuml-preview 4)
+    )
+  (define-key plantuml-mode-map (kbd "C-c p") 'my-plantuml-preview)
   )
 
 ;;-----------------------------------------------------------------------
@@ -973,7 +982,6 @@ This command does the inverse of `fill-region'."
 ;; (define-key my-keys-minor-mode-map (kbd "C-c s") 'sr-speedbar-toggle)
 ;; (define-key my-keys-minor-mode-map (kbd "C-c g") 'git-gutter:toggle)
 (define-key my-keys-minor-mode-map (kbd "C-c l") 'linum-mode)
-(define-key my-keys-minor-mode-map (kbd "C-c p") 'pabbrev-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c a") 'auto-complete-mode)
 (define-key my-keys-minor-mode-map (kbd "C-c v") 'pt-pbpaste)
 (define-key my-keys-minor-mode-map (kbd "C-c c") 'pt-pbcopy)
