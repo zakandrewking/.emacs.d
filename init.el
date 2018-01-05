@@ -313,6 +313,7 @@
   (add-hook 'csv-mode-hook 'set-csv-separators)
 
   ;; plantuml-mode
+  (require 'plantuml-mode)
   (defun my-plantuml-preview ()
     "Preview plantuml in a new pane"
     (interactive)

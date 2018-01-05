@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: exit
+# key: exit
+# group: debug
+# --
+import sys; sys.exit()
