@@ -28,7 +28,7 @@
                                  org-download matlab-mode edit-server json-mode
                                  fill-column-indicator gams-mode tide csv-mode
                                  ac-etags dockerfile-mode company
-                                 evil-vimish-fold plantuml-mode))
+                                 evil-vimish-fold plantuml-mode flycheck-mypy))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -90,7 +90,10 @@
 
   ;; python
   (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
-  (setq python-shell-interpreter "ipython")
+  (require 'flycheck-mypy)
+  (add-hook 'python-mode-hook 'flycheck-mode)
+  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
 
   ;; web-mode
   (require 'web-mode)
