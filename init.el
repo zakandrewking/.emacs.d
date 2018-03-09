@@ -158,6 +158,8 @@
   (define-key deft-mode-map (kbd "TAB") 'widget-forward)
   (define-key deft-mode-map (kbd "C-<return>") 'deft-new-file)
   (define-key deft-mode-map (kbd "C-M-<return>") 'deft-new-file-named)
+  ;; capture
+  (setq org-default-notes-file (concat deft-directory "CAPTURE.txt"))
   ;; This fix may be necessary so deft width doesn't stretch too far:
   ;; https://github.com/timvisher/deft/issues/1
   ;;
@@ -997,7 +999,7 @@ This command does the inverse of `fill-region'."
 ;; (define-key my-keys-minor-mode-map (kbd "M-j") 'indent-return-comment-indent)
 (define-key my-keys-minor-mode-map (kbd "C-c m") 'magit-status)
 ;; (define-key my-keys-minor-mode-map (kbd "C-<space>") ' ;
-(define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
+;; (define-key my-keys-minor-mode-map (kbd "C-c g") 'vc-git-grep)
 (define-key my-keys-minor-mode-map (kbd "C-w '") 'hsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w C-'") 'hsplit-last-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-w \"") 'vsplit-last-buffer)
@@ -1007,6 +1009,7 @@ This command does the inverse of `fill-region'."
 (define-key my-keys-minor-mode-map (kbd "s--") 'text-scale-decrease)
 (define-key my-keys-minor-mode-map (kbd "s-0") 'text-scale-adjust)
 (define-key my-keys-minor-mode-map (kbd "s-/") 'comment-dwim)
+(define-key my-keys-minor-mode-map "\C-cg" 'org-capture)
 
 (define-minor-mode my-keys-minor-mode
   "A minor mode so that my key settings override annoying major
