@@ -12,6 +12,10 @@
 
 (setq-default typescript-indent-level 2)
 
+(add-hook 'typescript-mode-hook
+          (lambda ()
+            (flycheck-mode +1)))
+
 ;; (defun setup-tide-mode ()
 ;;   (interactive)
 ;;   (tide-setup)
