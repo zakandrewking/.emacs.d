@@ -28,7 +28,7 @@
                                  org-download matlab-mode edit-server json-mode
                                  fill-column-indicator gams-mode tide csv-mode
                                  ac-etags dockerfile-mode company
-                                 evil-vimish-fold plantuml-mode flycheck-pycheckers))
+                                 evil-vimish-fold plantuml-mode flycheck-mypy))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -90,15 +90,29 @@
 
   ;; python
   (add-hook 'python-mode-hook (lambda () (modify-syntax-entry ?_ "w")))
-  (add-hook 'python-mode-hook 'flycheck-mode)
-  (require 'flycheck-pycheckers)
-  (with-eval-after-load 'flycheck
-    (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup))
-  (setq flycheck-pycheckers-checkers '(pep8 mypy3))
+
+  ;; python flycheck
   (setq-default flycheck-disabled-checkers '(python-flake8
                                              python-pylint
-                                             python-pycompile
-                                             python-mypy))
+                                             python-pycompile))
+
+  ;; pycodestyle from https://github.com/piger/flycheck-pycodestyle
+  (flycheck-define-checker python-pycodestyle
+    "A Python syntax and style checker using pycodestyle (former pep8)."
+    :command ("pycodestyle" source-inplace)
+    :error-patterns
+    ((error line-start (file-name) ":" line ":" column ":" (message) line-end))
+    :modes python-mode)
+  (add-to-list 'flycheck-checkers 'python-pycodestyle)
+
+  ;; mypy default followed by pycodestyle
+  (require 'flycheck-mypy)
+  (setq flycheck-python-mypy-args '("--follow-imports=silent"
+                                    "--ignore-missing-imports"))
+  (flycheck-add-next-checker 'python-mypy 'python-pycodestyle)
+  (add-hook 'python-mode-hook (lambda  ()
+                                (flycheck-mode t)
+                                (flycheck-select-checker 'python-mypy)))
 
   ;; web-mode
   (require 'web-mode)
