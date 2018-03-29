@@ -28,7 +28,8 @@
                                  org-download matlab-mode edit-server json-mode
                                  fill-column-indicator gams-mode tide csv-mode
                                  ac-etags dockerfile-mode company
-                                 evil-vimish-fold plantuml-mode flycheck-mypy))
+                                 evil-vimish-fold plantuml-mode flycheck-mypy
+                                 evil-magit evil-collection))
 
   ;; method to check if all packages are installed
   (defun packages-installed-p ()
@@ -48,14 +49,6 @@
       (when (not (package-installed-p p))
         (package-install p))))
 
-  ;; key chord
-  (key-chord-mode 1)
-  ;; quick buffer switch
-  (defun switch-to-last-buffer ()
-    (interactive)
-    (switch-to-buffer (other-buffer (current-buffer) 1)))
-  (key-chord-define-global "hl" 'switch-to-last-buffer)
-
   ;; evil mode setup
   (load "~/.emacs.d/evil-setup.el")
 
@@ -65,21 +58,17 @@
   ;; TypeScript & tide setup
   (load "~/.emacs.d/typescript-setup.el")
 
+  ;; key chord
+  (key-chord-mode 1)
+  ;; quick buffer switch
+  (defun switch-to-last-buffer ()
+    (interactive)
+    (switch-to-buffer (other-buffer (current-buffer) 1)))
+  (key-chord-define-global "hl" 'switch-to-last-buffer)
+
   ;; magit
   ;; Use H in diff to refine hunk (e.g. show word diff)
   (define-key magit-status-mode-map (kbd "H") 'magit-diff-toggle-refine-hunk)
-  ;; vim window movements in magit
-  (define-key magit-mode-map (kbd "C-w") 'nil)
-  (define-key magit-mode-map (kbd "C-w h") 'evil-window-left)
-  (define-key magit-mode-map (kbd "C-w l") 'evil-window-right)
-  (define-key magit-mode-map (kbd "C-w k") 'evil-window-up)
-  (define-key magit-mode-map (kbd "C-w j") 'evil-window-down)
-  (define-key magit-mode-map (kbd "C-w H") 'evil-window-move-far-left)
-  (define-key magit-mode-map (kbd "C-w L") 'evil-window-move-far-right)
-  (define-key magit-mode-map (kbd "C-w K") 'evil-window-move-very-top)
-  (define-key magit-mode-map (kbd "C-w J") 'evil-window-move-very-bottom)
-  (define-key magit-mode-map (kbd "C-w o") 'delete-other-windows)
-  (define-key magit-mode-map (kbd "C-w c") 'evil-window-delete)
   ;; don't check when pushing
   (setq magit-push-always-verify nil)
 
@@ -97,6 +86,7 @@
                                              python-pycompile))
 
   ;; pycodestyle from https://github.com/piger/flycheck-pycodestyle
+  (require 'flycheck)
   (flycheck-define-checker python-pycodestyle
     "A Python syntax and style checker using pycodestyle (former pep8)."
     :command ("pycodestyle" source-inplace)

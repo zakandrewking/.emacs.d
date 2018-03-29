@@ -1,10 +1,23 @@
+;; for evil-collection, set this before loading evil
+(setq evil-want-integration nil)
+
 ;; set up evil mode to work nicely
+(require 'evil)
 (evil-mode 1)
 (setq evil-want-fine-undo t)
 
-;; TODO try space as leader key
-;; http://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
-;; https://github.com/cofi/evil-leader
+;; evil-collection
+(require 'evil-collection)
+(evil-collection-init)
+
+;; magit
+(require 'evil-magit)
+
+;; surround
+(global-evil-surround-mode 1)
+
+;; code folding
+(evil-vimish-fold-mode 1)
 
 ;; find tags
 (defun my-jump-to-tag ()
@@ -55,9 +68,6 @@
 (key-chord-define evil-replace-state-map "jk" 'evil-normal-state)
 (setq key-chord-two-keys-delay 0.2)
 
-;; surround
-(global-evil-surround-mode 1)
-
 ;; save with :W
 (evil-ex-define-cmd "W" 'save-buffer)
 
@@ -81,42 +91,6 @@
             (define-key term-raw-map (kbd "C-c C-j")
               'evil-term-line-mode)))
 
-;; add evil magic to other modes
-
-(require 'magit)
-;; use emacs mode in magit
-(evil-set-initial-state 'magit-mode 'emacs)
-(evil-set-initial-state 'magit-popup-mode 'emacs)
-(evil-set-initial-state 'magit-popup-mode 'emacs)
-
-;; Make HJKL keys work in special buffers
-(evil-add-hjkl-bindings occur-mode 'emacs)
-(evil-add-hjkl-bindings ibuffer-mode 'emacs)
-;; (evil-add-hjkl-bindings magit-branch-manager-mode-map 'emacs
-;;   "K" 'magit-discard-item
-;;   "L" 'magit-key-mode-popup-logging)
-;; (evil-add-hjkl-bindings magit-status-mode-map 'emacs
-;;   "K" 'magit-discard-item
-;;   "l" 'magit-key-mode-popup-logging
-;;   "h" 'magit-toggle-diff-refine-hunk)
-;;   ;; "C-w" nil
-;;   ;; "C-w h" 'evil-window-left
-;;   ;; "C-w l" 'evil-window-right)
-;; (evil-add-hjkl-bindings magit-log-mode-map 'emacs)
-;; (evil-add-hjkl-bindings magit-commit-mode-map 'emacs)
-
-(require 'browse-kill-ring)
-(define-key browse-kill-ring-mode-map (kbd "k") 'browse-kill-ring-previous) ; why is this slow!?
-(define-key browse-kill-ring-mode-map (kbd "j") 'browse-kill-ring-forward) ; why is this slow!?
-
-;; doesn't work:
-;; (defun add-other-hjkl-bindings (keymap state)
-;;   (evil-define-key state keymap
-;;      "C-w h" (lookup-key evil-motion-state-map "C-w h")
-;;      "C-w j" (lookup-key evil-motion-state-map "C-w j")
-;;      "C-w k" (lookup-key evil-motion-state-map "C-w k")
-;;      "C-w l" (lookup-key evil-motion-state-map "C-w l")))
-
 ;; expand region in normal mode
 (require 'expand-region)
 (define-key evil-normal-state-map (kbd "+") 'er/expand-region)
@@ -126,6 +100,3 @@
 ;; conflicts with org-mode
 ;; (define-key evil-normal-state-map (kbd "C-c =") 'evil-numbers/inc-at-pt)
 ;; (define-key evil-normal-state-map (kbd "C-c -") 'evil-numbers/dec-at-pt)
-
-;; code folding
-(evil-vimish-fold-mode 1)
