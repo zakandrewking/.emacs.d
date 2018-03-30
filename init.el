@@ -7,6 +7,9 @@
     'sh-mode 'js2-mode 'markdown-mode 'haskell-mode 'org-mode 'c-mode 'css-mode
     'web-mode 'typescript-mode 'plantuml-mode))
 
+;; for evil-collection, set this before loading evil
+(setq evil-want-integration nil)
+
 ;;-----------------------------------------------------------------------
 ;; packages
 ;;-----------------------------------------------------------------------
@@ -24,7 +27,7 @@
                                  yaml-mode ag smart-mode-line web-mode auctex
                                  ess evil-surround deft markdown-mode
                                  auto-complete yasnippet sql-indent multi-term
-                                 ido-ubiquitous expand-region elm-mode smex
+                                 ido-completing-read+ expand-region elm-mode smex
                                  org-download matlab-mode edit-server json-mode
                                  fill-column-indicator gams-mode tide csv-mode
                                  ac-etags dockerfile-mode company
@@ -257,7 +260,7 @@
   (ido-everywhere 1)
   (setq ido-case-fold t)
   ;; ido-ubiquitous
-  (require 'ido-ubiquitous)
+  (require 'ido-completing-read+)
   (ido-ubiquitous-mode 1)
   ;; increase this for unicode completion with C-x 8 RET
   (setq ido-cr+-max-items 100000)

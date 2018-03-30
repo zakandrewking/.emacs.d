@@ -1,6 +1,3 @@
-;; for evil-collection, set this before loading evil
-(setq evil-want-integration nil)
-
 ;; set up evil mode to work nicely
 (require 'evil)
 (evil-mode 1)
